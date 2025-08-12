@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>당일민족 운영콘솔</title>
+  <style>
+    :root{
+      --bg:#f7f8fa;
+      --ink:#111315;
+      --muted:#666c75;
+      --brand:#0f766e;
+      --surface:#ffffff;
+      --line:#e5e7eb;
+      --radius:12px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans KR", sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas:
+        "brandbar brandbar"
+        "sidebar  main";
+    }
+    /* 상단 브랜드바 */
+    .brandbar{
+      grid-area:brandbar;
+      background:#0b0f14;
+      color:#fff;
+      padding:0 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brandbar .logo{
+      display:flex;gap:10px;align-items:center;
+      letter-spacing:.2px;font-weight:700;
+    }
+    .brandbar .logo-badge{
+      width:10px;height:10px;border-radius:3px;background:var(--brand);
+      box-shadow:0 0 0 3px rgba(15,118,110,.25);
+    }
+    /* 좌측 사이드바 */
+    aside{
+      grid-area:sidebar;
+      background:#121418;
+      color:#c9d1d9;
+      border-right:1px solid #20252b;
+      padding:14px 10px;
+      position:sticky; top:56px; height:calc(100dvh - 56px);
+      overflow:auto;
+    }
+    .nav-title{font-size:.8rem;color:#8b949e;margin:6px 10px 10px}
+    .nav{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .nav a{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:10px;
+      color:#e6edf3;text-decoration:none;
+      border:1px solid transparent;
+    }
+    .nav a:hover{background:#1b222a;border-color:#2a3139}
+    .nav a.active{background:#0f1720;border-color:#1e2a32}
+    .k{width:6px;height:6px;border-radius:2px;background:#3b82f6;flex:0 0 6px}
+    .k.green{background:#10b981}
+    .k.orange{background:#f59e0b}
+    .k.purple{background:#8b5cf6}
+    .k.gray{background:#94a3b8}
+
+    /* 메인 */
+    main{
+      grid-area:main;
+      padding:20px;
+      max-width:1200px;
+      width:100%;
+      margin:0 auto;
+    }
+    .page-head{
+      margin:6px 0 16px;
+    }
+    .page-head h1{
+      font-size:1.25rem;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:16px;
+    }
+    .panel{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:0 1px 0 rgba(0,0,0,.02);
+    }
+    .panel h2{
+      font-size:1rem;margin-bottom:10px;
+    }
+    .muted{color:var(--muted);font-size:.95rem;line-height:1.4}
+    /* 반응형 */
+    @media (max-width: 960px){
+      body{
+        grid-template-columns: 1fr;
+        grid-template-rows: 56px auto auto;
+        grid-template-areas:
+          "brandbar"
+          "sidebar"
+          "main";
+      }
+      aside{position:relative; top:0; height:auto}
+    }
+    /* 단락 배치 */
+    .col-12{grid-column: span 12}
+    .col-6{grid-column: span 6}
+    .col-4{grid-column: span 4}
+    .col-3{grid-column: span 3}
+    @media (max-width: 960px){
+      .col-6,.col-4,.col-3{grid-column: span 12}
+    }
+    /* 푸터 */
+    .foot{
+      margin:20px 0 0;
+      font-size:.85rem;color:#7a8088;text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <!-- 상단 브랜드바 -->
+  <div class="brandbar">
+    <div class="logo">
+      <span class="logo-badge" aria-hidden="true"></span>
+      <span>당일민족 운영콘솔</span>
+    </div>
+    <div style="font-size:.9rem;color:#9ba3af">v1.0 • internal</div>
+  </div>
+
+  <!-- 좌측 사이드바 내비 -->
+  <aside>
+    <div class="nav-title">메뉴</div>
+    <nav class="nav">
+      <a href="#overview" class="active"><span class="k green"></span>현황 요약</a>
+      <a href="#catalog"><span class="k"></span>상품 구성</a>
+      <a href="#intake"><span class="k orange"></span>신청/상담</a>
+      <a href="#content"><span class="k purple"></span>페이지/배너</a>
+      <a href="#admin"><span class="k gray"></span>계정·연동</a>
+    </nav>
+  </aside>
+
+  <!-- 메인 -->
+  <main>
+    <header class="page-head">
+      <h1>운영 개요</h1>
+    </header>
+
+    <div class="grid">
+      <!-- 현황 요약 -->
+      <section id="overview" class="panel col-12">
+        <h2>현황 요약</h2>
+        <p class="muted">최근 접수/상담/설치 일정 및 처리 상태를 간단히 집계해 표시할 영역입니다.</p>
+      </section>
+
+      <!-- 상품 구성 -->
+      <section id="catalog" class="panel col-6">
+        <h2>상품 구성</h2>
+        <p class="muted">요금제, 부가항목, 대표 이미지와 설명을 생성·수정·비활성화합니다.</p>
+      </section>
+
+      <!-- 신청/상담 -->
+      <section id="intake" class="panel col-6">
+        <h2>신청 · 상담</h2>
+        <p class="muted">접수내역과 상태값(대기/상담중/설치예약/완료 등)을 조회·변경합니다.</p>
+      </section>
+
+      <!-- 페이지/배너 -->
+      <section id="content" class="panel col-6">
+        <h2>페이지 · 배너</h2>
+        <p class="muted">메뉴 구조, 섹션 배치, 배너 이미지를 관리합니다.</p>
+      </section>
+
+      <!-- 계정·연동 -->
+      <section id="admin" class="panel col-6">
+        <h2>계정 · 연동</h2>
+        <p class="muted">권한, 비밀번호 정책, API 키(예: SENS, Airtable 등) 설정을 다룹니다.</p>
+      </section>
+    </div>
+
+    <div class="foot">© 당일민족 • 내부용 화면</div>
+  </main>
+</body>
+</html>
