@@ -81,12 +81,11 @@
     .privacy-panel summary{ cursor:pointer; font-weight:600; color:#2563eb; }
     .privacy-panel summary::-webkit-details-marker{ display:none; }
   </style>
-  <!-- 아이콘: 메뉴 (햄버거) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body class="bg-gray-50">
 
-  <!-- 로그인/회원가입 상단바: 좌 로고 / 우 버튼 -->
+  <!-- 로그인/회원가입 상단바 -->
   <div class="nav-auth-bar">
     <div class="nav-auth-inner">
       <div class="nav-brand" onclick="location.href='/'" aria-label="홈으로 이동">
@@ -189,25 +188,25 @@
             <b>226 채널</b><small>Btv 스탠다드 · 월 17,600원</small>
           </span>
           <span class="dm-btn" data-tv="sk-252-all" data-price="20900" data-name="Btv ALL">
-            <b>252 채널</b><small>Btv 올 · 월 20,900원</small>
+            <b>252 채널</b><small>Btv ALL · 월 20,900원</small>
           </span>
           <span class="dm-btn" data-tv="sk-222-standard-plus" data-price="25300" data-name="Btv 스탠다드 플러스">
-            <b>222 채널</b><small>스탠다드 플러스 · 월 25,300원</small>
+            <b>222 채널</b><small>Btv 스탠다드 플러스 · 월 25,300원</small>
           </span>
           <span class="dm-btn" data-tv="sk-252-all-plus" data-price="26400" data-name="Btv ALL 플러스">
-            <b>252 채널</b><small>ALL 플러스 · 월 26,400원</small>
+            <b>252 채널</b><small>Btv ALL 플러스 · 월 26,400원</small>
           </span>
           <span class="dm-btn" data-tv="sk-222-nf" data-price="29900" data-name="Btv 스탠다드 넷플릭스">
-            <b>222 채널 + 넷플릭스</b><small>스탠다드 넷플릭스 · 월 29,900원</small>
+            <b>222 채널 + 넷플릭스</b><small>Btv 스탠다드 넷플릭스 · 월 29,900원</small>
           </span>
           <span class="dm-btn" data-tv="sk-222-all-nf" data-price="32400" data-name="Btv ALL 넷플릭스">
-            <b>222 채널 + 넷플릭스</b><small>ALL 넷플릭스 · 월 32,400원</small>
+            <b>222 채널 + 넷플릭스</b><small>Btv ALL 넷플릭스 · 월 32,400원</small>
           </span>
           <span class="dm-btn" data-tv="sk-252-std-nf-prem" data-price="32900" data-name="Btv 스탠다드 넷플릭스 프리미엄">
-            <b>252 채널 + NF 프리미엄</b><small>스탠다드 넷플릭스 프리미엄 · 월 32,900원</small>
+            <b>252 채널 + NF 프리미엄</b><small>Btv 스탠다드 넷플릭스 프리미엄 · 월 32,900원</small>
           </span>
           <span class="dm-btn" data-tv="sk-252-all-nf-prem" data-price="35400" data-name="Btv ALL 넷플릭스 프리미엄">
-            <b>252 채널 + NF 프리미엄</b><small>ALL 넷플릭스스 프리미엄 · 월 35,400원</small>
+            <b>252 채널 + NF 프리미엄</b><small>Btv ALL 넷플릭스스 프리미엄 · 월 35,400원</small>
           </span>
         </div>
 
@@ -222,9 +221,9 @@
             <span class="dm-btn" data-mobile="-5500"><b>휴대폰 할인</b><small>-5,500원</small></span>
           </div>
 
-          <!-- 셋톱박스 할인(토글, TV 포함 시만 적용) -->
+          <!-- 셋톱박스 할인(토글, TV 포함 시만 적용) → 초기 활성화 -->
           <div id="dm-bundle-stb">
-            <span class="dm-btn" data-stb="-4400"><b>셋톱박스 할인</b><small>TV 포함 시 -4,400원</small></span>
+            <span class="dm-btn active" data-stb="-4400"><b>셋톱박스 할인</b><small>TV 포함 시 -4,400원</small></span>
           </div>
 
           <div class="dm-help">* 셋톱박스 할인은 TV를 포함했을 때만 적용되며, 휴대폰 할인과 <b>중복</b> 적용됩니다.</div>
@@ -262,7 +261,7 @@
               wifiIncluded: false,
               wifiPrice: 0,
               mobileDiscount: 0,   // 0 | -3300 | -5500
-              stbOn: false
+              stbOn: true          // ✅ 초기 활성화
             };
 
             function refreshSpeedPriceLabels(){
@@ -390,6 +389,7 @@
               updateTotal();
             });
 
+            // 셋톱박스(토글)
             $('#dm-bundle-stb').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               btn.classList.toggle('active');
@@ -397,14 +397,12 @@
               updateTotal();
             });
 
-            // 외부에서 통신사 세팅/노출을 호출할 수 있게 공개 API
+            // 외부에서 통신사 세팅/노출
             const wrap = document.getElementById('internet-detail');
             function applyCarrier(carrier){
               const target = Array.from($$('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier === carrier);
-              if(target){ target.click(); } // 내부 로직 그대로 활용
-              else { // 혹시 버튼 텍스트가 변경된 경우 대비
-                state.carrier = carrier; refreshSpeedPriceLabels(); updateTotal();
-              }
+              if(target){ target.click(); }
+              else { state.carrier = carrier; refreshSpeedPriceLabels(); updateTotal(); }
             }
             window.DM_SK = {
               show: function(carrier){
@@ -419,6 +417,7 @@
             const firstTv = $('#dm-tv-section .dm-btn'); if(firstTv) firstTv.click();
             setActive('#dm-wifi-section', $('#dm-wifi-section .dm-btn[data-wifi="0"]'));
             setActive('#dm-bundle-mobile', $('#dm-bundle-mobile .dm-btn[data-mobile="0"]'));
+            // 셋톱박스 버튼은 이미 active 클래스가 있음(state.stbOn=true), 바로 합계 반영
             updateTotal();
           })();
         </script>
@@ -552,11 +551,9 @@
         const label = span.textContent.trim();
         if(carriers.includes(label)){
           internetBar.style.display = 'none';
-          // 상세 섹션 표시 + 해당 통신사 적용 (내부 API 호출)
           if(window.DM_SK && typeof window.DM_SK.show === 'function'){
             window.DM_SK.show(label);
           } else {
-            // 혹시 스크립트 로딩 타이밍 이슈가 있으면 섹션만 노출
             document.getElementById('internet-detail').style.display = 'block';
             document.getElementById('internet-detail').scrollIntoView({behavior:'smooth', block:'start'});
           }
