@@ -126,6 +126,11 @@
   <section id="internet-detail" class="custom-section" style="display:none;">
     <div class="section-inner">
 
+      <!-- ← 목록으로 버튼 -->
+      <div class="w-full flex justify-end mb-2" style="margin-top:-6px;">
+        <button id="dm-close" type="button" class="dm-btn">← 목록으로</button>
+      </div>
+
       <!-- ▼ 인터넷 - 상세 컴포넌트 -->
       <section id="internet-sk" class="dm-wrap" aria-label="인터넷 - 상세">
         <style>
@@ -188,7 +193,7 @@
             <b>226 채널</b><small>Btv 스탠다드 · 월 17,600원</small>
           </span>
           <span class="dm-btn" data-tv="sk-252-all" data-price="20900" data-name="Btv ALL">
-            <b>252 채널</b><small>Btv ALL · 월 20,900원</small>
+            <b>252 채널</b><small>Btv 올 · 월 20,900원</small>
           </span>
           <span class="dm-btn" data-tv="sk-222-standard-plus" data-price="25300" data-name="Btv 스탠다드 플러스">
             <b>222 채널</b><small>Btv 스탠다드 플러스 · 월 25,300원</small>
@@ -221,7 +226,7 @@
             <span class="dm-btn" data-mobile="-5500"><b>휴대폰 할인</b><small>-5,500원</small></span>
           </div>
 
-          <!-- 셋톱박스 할인(토글, TV 포함 시만 적용) → 초기 활성화 -->
+          <!-- 셋톱박스 할인(토글) → 초기 활성화 -->
           <div id="dm-bundle-stb">
             <span class="dm-btn active" data-stb="-4400"><b>셋톱박스 할인</b><small>TV 포함 시 -4,400원</small></span>
           </div>
@@ -260,8 +265,8 @@
               phone: false,
               wifiIncluded: false,
               wifiPrice: 0,
-              mobileDiscount: 0,   // 0 | -3300 | -5500
-              stbOn: true          // ✅ 초기 활성화
+              mobileDiscount: 0,
+              stbOn: true
             };
 
             function refreshSpeedPriceLabels(){
@@ -327,12 +332,12 @@
                 parts.push(`셋톱박스 할인 ${money(stb)}원`);
               }
 
-              $('#dm-total').textContent = `월 ${money(total)}원`;
-              $('#dm-breakdown').textContent = parts.join(' · ');
+              document.getElementById('dm-total').textContent = `월 ${money(total)}원`;
+              document.getElementById('dm-breakdown').textContent = parts.join(' · ');
             }
 
             // 내부 핸들러
-            $('#dm-carriers').addEventListener('click', e=>{
+            document.getElementById('dm-carriers').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               state.carrier = btn.dataset.carrier;
               setActive('#dm-carriers', btn);
@@ -340,49 +345,49 @@
               updateTotal();
             });
 
-            $('#dm-speeds').addEventListener('click', e=>{
+            document.getElementById('dm-speeds').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               state.speed = btn.dataset.speed;
               setActive('#dm-speeds', btn);
               updateTotal();
             });
 
-            $('#dm-tv-toggle').addEventListener('change', e=>{
+            document.getElementById('dm-tv-toggle').addEventListener('change', e=>{
               state.tvIncluded = e.target.checked;
-              $('#dm-tv-section').style.display = state.tvIncluded ? '' : 'none';
+              document.getElementById('dm-tv-section').style.display = state.tvIncluded ? '' : 'none';
               updateTotal();
             });
 
-            $('#dm-phone-toggle').addEventListener('change', e=>{
+            document.getElementById('dm-phone-toggle').addEventListener('change', e=>{
               state.phone = e.target.checked;
               updateTotal();
             });
 
-            $('#dm-wifi-toggle').addEventListener('change', e=>{
+            document.getElementById('dm-wifi-toggle').addEventListener('change', e=>{
               state.wifiIncluded = e.target.checked;
-              $('#dm-wifi-section').style.display = state.wifiIncluded ? '' : 'none';
+              document.getElementById('dm-wifi-section').style.display = state.wifiIncluded ? '' : 'none';
               if(!state.wifiIncluded){
                 state.wifiPrice = 0;
-                setActive('#dm-wifi-section', $('#dm-wifi-section .dm-btn[data-wifi="0"]'));
+                setActive('#dm-wifi-section', document.querySelector('#dm-wifi-section .dm-btn[data-wifi="0"]'));
               }
               updateTotal();
             });
 
-            $('#dm-wifi-section').addEventListener('click', e=>{
+            document.getElementById('dm-wifi-section').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               state.wifiPrice = parseInt(btn.dataset.wifi,10) || 0;
               setActive('#dm-wifi-section', btn);
               updateTotal();
             });
 
-            $('#dm-tv-section').addEventListener('click', e=>{
+            document.getElementById('dm-tv-section').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               state.tv = { id: btn.dataset.tv, name: btn.dataset.name, price: parseInt(btn.dataset.price,10) };
               setActive('#dm-tv-section', btn);
               updateTotal();
             });
 
-            $('#dm-bundle-mobile').addEventListener('click', e=>{
+            document.getElementById('dm-bundle-mobile').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               state.mobileDiscount = parseInt(btn.dataset.mobile,10) || 0;
               setActive('#dm-bundle-mobile', btn);
@@ -390,7 +395,7 @@
             });
 
             // 셋톱박스(토글)
-            $('#dm-bundle-stb').addEventListener('click', e=>{
+            document.getElementById('dm-bundle-stb').addEventListener('click', e=>{
               const btn = e.target.closest('.dm-btn'); if(!btn) return;
               btn.classList.toggle('active');
               state.stbOn = btn.classList.contains('active');
@@ -400,13 +405,14 @@
             // 외부에서 통신사 세팅/노출
             const wrap = document.getElementById('internet-detail');
             function applyCarrier(carrier){
-              const target = Array.from($$('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier === carrier);
+              const target = Array.from(document.querySelectorAll('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier === carrier);
               if(target){ target.click(); }
               else { state.carrier = carrier; refreshSpeedPriceLabels(); updateTotal(); }
             }
             window.DM_SK = {
               show: function(carrier){
-                if(wrap){ wrap.style.display = 'block'; }
+                if (typeof window.toggleInternetDetail === 'function') window.toggleInternetDetail(true);
+                else if(wrap){ wrap.style.display = 'block'; }
                 if(carrier){ applyCarrier(carrier); }
                 (wrap || document.getElementById('internet-sk')).scrollIntoView({behavior:'smooth', block:'start'});
               }
@@ -414,10 +420,10 @@
 
             // 초기 상태
             refreshSpeedPriceLabels();
-            const firstTv = $('#dm-tv-section .dm-btn'); if(firstTv) firstTv.click();
-            setActive('#dm-wifi-section', $('#dm-wifi-section .dm-btn[data-wifi="0"]'));
-            setActive('#dm-bundle-mobile', $('#dm-bundle-mobile .dm-btn[data-mobile="0"]'));
-            // 셋톱박스 버튼은 이미 active 클래스가 있음(state.stbOn=true), 바로 합계 반영
+            const firstTv = document.querySelector('#dm-tv-section .dm-btn'); if(firstTv) firstTv.click();
+            setActive('#dm-wifi-section', document.querySelector('#dm-wifi-section .dm-btn[data-wifi="0"]'));
+            setActive('#dm-bundle-mobile', document.querySelector('#dm-bundle-mobile .dm-btn[data-mobile="0"]'));
+            // 셋톱박스 active 상태 유지
             updateTotal();
           })();
         </script>
@@ -428,16 +434,16 @@
   </section>
   <!-- ▲ 통신사 상세 UI 래퍼 -->
 
-  <!-- 기존 임시 섹션들(원하면 삭제 가능) -->
+  <!-- 홈(상세 1~5, 후기 등) : 상세 열리면 자동 숨김 -->
   <section class="custom-section"><div class="section-inner">여기에 1번째 상세페이지 내용</div></section>
   <section class="custom-section"><div class="section-inner">여기에 2번째 상세페이지 내용</div></section>
   <section class="custom-section">
     <div class="section-inner">
       <div class="text-gray-700 text-3xl md:text-4xl font-semibold mb-10">5가지 이미지 애니메이션(슬라이드)</div>
       <div class="slide-container">
-        <img src="/mnt/data/8c69cbd8-4983-4800-993f-1687cb2ea437.png" class="slide-img active" id="slide1" alt="slide1">
-        <img src="/mnt/data/e85b096c-e182-4ed4-87c1-2c9908c9c9fc.png" class="slide-img" id="slide2" alt="slide2">
-        <img src="/mnt/data/44c3a676-ba08-464f-94e4-8ecbda6efd12.png" class="slide-img" id="slide3" alt="slide3">
+        <img src="/assets/slide1.png" class="slide-img active" id="slide1" alt="slide1">
+        <img src="/assets/slide2.png" class="slide-img" id="slide2" alt="slide2">
+        <img src="/assets/slide3.png" class="slide-img" id="slide3" alt="slide3">
       </div>
     </div>
   </section>
@@ -544,6 +550,15 @@
       }
     });
 
+    // 상세 on/off 전역 토글러
+    window.toggleInternetDetail = function(show){
+      const detail = document.getElementById('internet-detail');
+      const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
+      detail.style.display = show ? 'block' : 'none';
+      homeSections.forEach(s => s.style.display = show ? 'none' : 'flex');
+      if(show){ detail.scrollIntoView({behavior:'smooth', block:'start'}); }
+    };
+
     // 카테고리 클릭 → 상세 UI 표시 + 통신사 세팅
     const carriers = ['SK','KT','LG','스카이라이프','헬로비전','SK POP'];
     document.querySelectorAll('#internetCats span').forEach(span=>{
@@ -552,14 +567,19 @@
         if(carriers.includes(label)){
           internetBar.style.display = 'none';
           if(window.DM_SK && typeof window.DM_SK.show === 'function'){
-            window.DM_SK.show(label);
+            window.DM_SK.show(label); // 내부에서 toggleInternetDetail(true) 호출
           } else {
-            document.getElementById('internet-detail').style.display = 'block';
-            document.getElementById('internet-detail').scrollIntoView({behavior:'smooth', block:'start'});
+            window.toggleInternetDetail(true);
           }
         }
       });
     });
+
+    // ← 목록으로 버튼
+    const closeBtn = document.getElementById('dm-close');
+    if(closeBtn){
+      closeBtn.addEventListener('click', ()=> window.toggleInternetDetail(false));
+    }
 
     // 상담신청 버튼/폼 쇼/하이드
     const consultOpenBtn = document.getElementById('consultOpenBtn');
