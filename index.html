@@ -18,11 +18,22 @@
   .nav-2025-wrap{background:#fff;border-bottom:1.2px solid #ececec;position:relative;z-index:80}
   .nav-2025-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:36px;padding:16px 24px 8px 24px;font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:600;font-size:20px}
   .nav-2025-main{display:flex;gap:26px;align-items:center}
+  .nav-2025-main li{cursor:pointer;user-select:none}
   .nav-2025-menu-btn{font-size:24px;color:#8ea5d3;background:none;border:none;cursor:pointer;padding:2px 6px}
 
-  /* 펼침바: 클래스 토글 */
-  .nav-2025-subbar-wrap{width:100vw;left:0;position:absolute;top:100%;display:none;background:#fff;border-bottom:2px solid #e8eefb;box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:81}
+  /* 펼침바: 갭 제거 + 브릿지 추가 */
+  .nav-2025-subbar-wrap{
+    width:100vw;left:0;position:absolute;
+    top:calc(100% - 1px); /* ← 상단과 1px 겹치기 */
+    display:none;background:#fff;border-bottom:2px solid #e8eefb;
+    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:81
+  }
   .nav-2025-subbar-wrap.show{display:block;}
+  /* ← 위쪽으로 10px 투명 브릿지 (마우스 이동 중 닫힘 방지) */
+  .nav-2025-subbar-wrap::before{
+    content:""; position:absolute; left:0; right:0; top:-10px; height:10px;
+    background:transparent; /* hover 영역만 제공 */
+  }
   .nav-2025-subbar-inner{max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569}
   .nav-2025-subbar-inner span{cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .12s,color .12s}
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
@@ -86,14 +97,13 @@
     <ul class="nav-2025-main">
       <li><button class="nav-2025-menu-btn" aria-label="전체메뉴"><i class="fa-solid fa-bars"></i></button></li>
       <li id="navInternet">인터넷</li>
-      <li>가전렌탈</li>
-      <li>사은품지급명단</li>
-      <li>후기</li>
+      <li id="navRental">가전렌탈</li>
+      <li id="navGifts">사은품지급명단</li>
+      <li id="navReview">후기</li>
     </ul>
   </div>
   <div class="nav-2025-subbar-wrap" id="internetBar">
     <div class="nav-2025-subbar-inner" id="internetCats">
-      <!-- 예전 스타일: 텍스트만(체크X) -->
       <span data-carrier="SK">SK</span>
       <span data-carrier="KT">KT</span>
       <span data-carrier="LG">LG</span>
@@ -178,11 +188,11 @@
 <!-- ▲ 상세 끝 -->
 
 <!-- 홈 더미 섹션들 -->
-<section class="custom-section"><div class="section-inner">여기에 1번째 상세페이지 내용</div></section>
-<section class="custom-section"><div class="section-inner">여기에 2번째 상세페이지 내용</div></section>
-<section class="custom-section"><div class="section-inner">여기에 3번째 상세페이지 내용</div></section>
-<section class="custom-section"><div class="section-inner">여기에 4번째 상세페이지 내용</div></section>
-<section class="custom-section"><div class="section-inner">여기에 5번째 상세페이지 내용</div></section>
+<section id="sec1" class="custom-section"><div class="section-inner">여기에 1번째 상세페이지 내용</div></section>
+<section id="sec2" class="custom-section"><div class="section-inner">여기에 2번째 상세페이지 내용</div></section>
+<section id="sec3" class="custom-section"><div class="section-inner">여기에 3번째 상세페이지 내용</div></section>
+<section id="sec4" class="custom-section"><div class="section-inner">여기에 4번째 상세페이지 내용</div></section>
+<section id="sec5" class="custom-section"><div class="section-inner">여기에 5번째 상세페이지 내용</div></section>
 
 <div id="footer-spacer"></div>
 
@@ -240,13 +250,23 @@
 const navInternet = document.getElementById('navInternet');
 const internetBar = document.getElementById('internetBar');
 let hoverTimer = null;
-const showBar = () => { clearTimeout(hoverTimer); internetBar.classList.add('show'); };
-const hideBar = () => { hoverTimer = setTimeout(()=> internetBar.classList.remove('show'), 180); };
 
-navInternet.addEventListener('pointerenter', showBar);
-navInternet.addEventListener('pointerleave', hideBar);
-internetBar.addEventListener('pointerenter', showBar);
-internetBar.addEventListener('pointerleave', hideBar);
+// 닫힘 지연을 충분히 줘서 이동 중 닫히지 않게
+const OPEN_DELAY = 0;
+const CLOSE_DELAY = 450;
+
+const showBarNow = ()=>{ clearTimeout(hoverTimer); internetBar.classList.add('show'); };
+const hideBarLater = ()=>{
+  clearTimeout(hoverTimer);
+  hoverTimer = setTimeout(()=> internetBar.classList.remove('show'), CLOSE_DELAY);
+};
+
+navInternet.addEventListener('pointerenter', ()=> {
+  if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow();
+});
+navInternet.addEventListener('pointerleave', hideBarLater);
+internetBar.addEventListener('pointerenter', showBarNow);
+internetBar.addEventListener('pointerleave', hideBarLater);
 
 // 모바일: 탭으로 토글 + 바깥 클릭 시 닫기
 navInternet.addEventListener('click', (e)=>{
@@ -254,7 +274,7 @@ navInternet.addEventListener('click', (e)=>{
     e.stopPropagation();
     internetBar.classList.toggle('show');
   } else {
-    showBar(); // 데스크톱에서도 클릭으로 확실히 열기
+    showBarNow(); // 데스크톱 클릭으로도 확실히 열기
   }
 });
 document.addEventListener('click', (e)=>{
@@ -262,6 +282,12 @@ document.addEventListener('click', (e)=>{
     internetBar.classList.remove('show');
   }
 });
+
+/* ===== 상단 메뉴 클릭동작(가전렌탈/사은품/후기) ===== */
+const smoothTo = (id)=>{ const el=document.getElementById(id); if(!el) return; window.toggleInternetDetail(false); el.scrollIntoView({behavior:'smooth',block:'start'}); };
+document.getElementById('navRental').addEventListener('click', ()=> smoothTo('sec2'));
+document.getElementById('navGifts').addEventListener('click',  ()=> smoothTo('sec4'));
+document.getElementById('navReview').addEventListener('click', ()=> smoothTo('sec5'));
 
 /* ===== 상세 표시 토글 ===== */
 window.toggleInternetDetail = function(show){
@@ -322,7 +348,7 @@ const TV_PLANS = {
   ]
 };
 
-/* ===== 상태 ===== */
+/* ===== 상태/유틸 ===== */
 const $ = s=>document.querySelector(s);
 const $$ = s=>document.querySelectorAll(s);
 const money = n => (n||0).toLocaleString('ko-KR');
@@ -339,7 +365,7 @@ const state = {
   stbOn: true
 };
 
-/* ===== 렌더링 함수 ===== */
+/* ===== 렌더링 ===== */
 function setActive(groupSel, btn){
   $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -455,7 +481,7 @@ document.querySelectorAll('#internetCats span').forEach(chip=>{
 });
 
 // ← 목록으로
-$('#dm-close').addEventListener('click', ()=> window.toggleInternetDetail(false));
+document.getElementById('dm-close').addEventListener('click', ()=> window.toggleInternetDetail(false));
 
 /* ===== 초기 ===== */
 renderSpeedOptions(); renderTvPlans(); refreshStbLabel(); updateTotal();
