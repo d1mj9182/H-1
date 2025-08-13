@@ -25,20 +25,14 @@
   .nav-2025-subbar-wrap{
     width:100vw;left:0;position:absolute;top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
-    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999 /* 모바일 고정 시도 대비 높임 */
+    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
   }
   .nav-2025-subbar-wrap.show{display:block;}
-  /* 모바일: 고정 모드 */
-  .nav-2025-subbar-wrap.lock{
-    position:fixed; /* 스크롤해도 고정 */
-    left:0; right:0;
-    /* top은 JS로 헤더 실제 높이에 맞춰 계산해서 넣음 */
-  }
+  .nav-2025-subbar-wrap.lock{position:fixed;left:0;right:0;}
   .nav-2025-subbar-wrap::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;background:transparent}
   .nav-2025-subbar-inner{max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569}
   .nav-2025-subbar-inner span{cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .12s,color .12s}
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
-
   @media(max-width:900px){.nav-2025-inner{gap:16px;font-size:18px}}
 
   /* ------------ 상세/폼/푸터 ------------ */
@@ -70,6 +64,11 @@
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
   .dm-break{font-size:13px;color:#444;margin-top:6px}
+  /* 안내 박스: 더 작고, 더 연하게 */
+  .dm-note{margin-top:10px;border:1px dashed #e2e8f0;background:#fafbff;border-radius:12px;padding:10px 12px;color:#6b7280;font-size:12px}
+  .dm-note .tit{display:flex;align-items:center;gap:8px;font-weight:700;color:#6b7280;font-size:13px;margin-bottom:4px}
+  .dm-note ul{margin-left:16px;list-style:circle}
+  .dm-note li{margin:2px 0}
   .dm-help{font-size:12px;color:#666;margin-top:4px}
 
   .privacy-toggle{color:#2563eb;cursor:pointer;user-select:none;margin-left:4px}
@@ -151,10 +150,43 @@
         <div id="dm-tv-options"></div>
       </div>
 
+      <!-- 결합/할인 -->
+      <div class="dm-row" id="dm-discounts">
+        <div class="dm-title">결합 / 할인</div>
+
+        <!-- 1) 공통 결합할인 -->
+        <div id="dm-bundle-mobile">
+          <span class="dm-btn active" data-mobile="0"><b>결합 없음</b></span>
+          <span class="dm-btn" data-mobile="-3300"><b>결합할인</b><small>-3,300원</small></span>
+          <span class="dm-btn" data-mobile="-5500"><b>결합할인</b><small>-5,500원</small></span>
+          <span class="dm-btn" data-mobile="-9900"><b>결합할인</b><small>-9,900원</small></span>
+          <span class="dm-btn" data-mobile="-13200"><b>결합할인</b><small>-13,200원</small></span>
+        </div>
+
+        <!-- 2) SK 전용 온가족할인 -->
+        <div id="dm-family-wrap" style="margin-top:10px;">
+          <div style="font-weight:700;margin:8px 4px 6px 4px;color:#334155">SK 온가족할인</div>
+          <div id="dm-family">
+            <span class="dm-btn active" data-family="none"><b>미적용</b></span>
+            <span class="dm-btn" data-family="30"><b>30% 할인</b><small>속도별 자동 적용</small></span>
+            <span class="dm-btn" data-family="50"><b>50% 할인</b><small>속도별 자동 적용</small></span>
+          </div>
+          <div class="dm-help">* 온가족할인은 <b>인터넷 요금(조합 적용가)</b>에서 추가로 차감됩니다.</div>
+        </div>
+      </div>
+
       <!-- 합계 -->
       <div class="dm-row dm-total">
         <div id="dm-total">월 0원</div>
         <div id="dm-breakdown" class="dm-break"></div>
+        <div class="dm-note" id="dm-notice">
+          <div class="tit"><i class="fa-solid fa-circle-info"></i>안내</div>
+          <ul>
+            <li>최종 금액은 <b>셋톱박스·WIFI 정책</b>에 따라 일부 차이가 있을 수 있습니다.</li>
+            <li><b>설치비</b>는 1회 청구되며 위 금액에 <b>미포함</b>입니다.</li>
+            <li>모든 요금은 <b>VAT 포함</b> 기준입니다.</li>
+          </ul>
+        </div>
       </div>
     </section>
   </div>
@@ -239,7 +271,7 @@ internetBar.addEventListener('pointerleave', ()=> { if (window.innerWidth>=900) 
 /* 모바일: 클릭 시 고정(lock) */
 function lockMobileBar(){
   const rect = navWrap.getBoundingClientRect();
-  internetBar.style.top = (rect.bottom + window.scrollY) + 'px'; // 실제 헤더 아래에 고정
+  internetBar.style.top = (rect.bottom + window.scrollY) + 'px';
   internetBar.classList.add('show','lock');
 }
 function unlockMobileBar(){
@@ -255,21 +287,14 @@ navInternet.addEventListener('click', (e)=>{
     showBarNow();
   }
 });
-
-/* 화면 회전/리사이즈 시 고정 상태면 위치 재계산 */
 window.addEventListener('resize', ()=>{
   if (window.innerWidth<900 && internetBar.classList.contains('lock')) lockMobileBar();
-  if (window.innerWidth>=900) unlockMobileBar(); // 데스크톱 전환 시 정리
+  if (window.innerWidth>=900) unlockMobileBar();
 });
-
-/* 바깥 클릭 시 닫기 */
 document.addEventListener('click', (e)=>{
   const isOutside = !internetBar.contains(e.target) && !navInternet.contains(e.target);
-  if (window.innerWidth<900){
-    if (isOutside) unlockMobileBar();
-  }else{
-    if (isOutside) internetBar.classList.remove('show');
-  }
+  if (window.innerWidth<900){ if (isOutside) unlockMobileBar(); }
+  else { if (isOutside) internetBar.classList.remove('show'); }
 });
 
 /* ===== 상단 메뉴 클릭동작 ===== */
@@ -287,7 +312,7 @@ window.toggleInternetDetail = function(show){
   if(show){ detail.scrollIntoView({behavior:'smooth', block:'start'}); }
 };
 
-/* ===== 속도/TV/요금 — 기존 로직 그대로 (생략 없이 포함) ===== */
+/* ===== 데이터 ===== */
 const SPEED_OPTIONS = {
   SK: ["100","500","1000"],
   KT: ["100","500","1000"],
@@ -332,6 +357,7 @@ const TV_PLANS = {
   ]
 };
 
+/* 인터넷 요금(체크박스 조합표) */
 const INTERNET_MATRIX = {
   SK: {
     none:  {"100":22000,"500":33000,"1000":38500},
@@ -365,18 +391,28 @@ const INTERNET_MATRIX = {
   }
 };
 
+/* SK 온가족할인(속도별 할인액) */
+const SK_FAMILY = {
+  "30": {"100": -6600, "500": -9900, "1000": -11550},
+  "50": {"100": -11000, "500": -16500, "1000": -19250}
+};
+
 const $ = s=>document.querySelector(s);
 const $$ = s=>document.querySelectorAll(s);
 const money = n => (n||0).toLocaleString('ko-KR');
 
+/* ===== 상태 ===== */
 const state = {
   carrier: 'SK',
   speed: null,
   tvIncluded: true,
   wifiIncluded: false,
-  tv: null
+  tv: null,
+  mobileDiscount: 0,        // 공통 결합할인
+  familySelection: 'none'   // SK 온가족 미적용/30/50
 };
 
+/* ===== 유틸/렌더 ===== */
 function setActive(groupSel, btn){
   $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -385,7 +421,10 @@ function setActive(groupSel, btn){
 function applyCarrierRules(){
   const wifi = $('#dm-wifi-toggle');
   const tv   = $('#dm-tv-toggle');
-  wifi.disabled=false; tv.disabled=false;
+  const famWrap = $('#dm-family-wrap');
+
+  wifi.disabled=false; tv.disabled=false; famWrap.style.display = (state.carrier==='SK') ? '' : 'none';
+  if(state.carrier!=='SK'){ state.familySelection='none'; setActive('#dm-family','#dm-family [data-family="none"]'); }
 
   if(state.carrier==='LG' || state.carrier==='헬로비전'){
     state.wifiIncluded = true; wifi.checked = true; wifi.disabled = true;
@@ -415,6 +454,13 @@ function getInternetPrice(){
   return INTERNET_MATRIX[c][key][sp] || 0;
 }
 
+function getFamilyDiscount(){
+  if(state.carrier!=='SK') return 0;
+  if(state.familySelection==='none') return 0;
+  const sp = String(state.speed);
+  return SK_FAMILY[state.familySelection]?.[sp] || 0;
+}
+
 function renderSpeedOptions(){
   const box = $('#dm-speed-options');
   box.innerHTML = '';
@@ -436,7 +482,7 @@ function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
     const sp = btn.dataset.speed;
     const prev = state.speed; state.speed = sp;
-    const price = getInternetPrice();
+    const price = getInternetPrice(); // 할인 전 조합가
     const small = btn.querySelector('small.p');
     if(small) small.textContent = `월 ${money(price)}원`;
     state.speed = prev;
@@ -462,6 +508,7 @@ function renderTvPlans(){
   updateTotal();
 }
 
+/* ===== 합계 계산 ===== */
 function updateTotal(){
   let total=0; const parts=[];
   const internet = getInternetPrice();
@@ -474,6 +521,18 @@ function updateTotal(){
     total += state.tv.price;
     parts.push(`TV(${state.tv.name}) ${money(state.tv.price)}원`);
   }
+  /* 결합할인 */
+  if(state.mobileDiscount){
+    total += state.mobileDiscount; // 음수
+    parts.push(`결합할인 ${money(state.mobileDiscount)}원`);
+  }
+  /* SK 온가족할인 */
+  const fam = getFamilyDiscount();
+  if(fam){
+    total += fam; // 음수
+    parts.push(`온가족할인 ${money(fam)}원`);
+  }
+
   $('#dm-total').textContent = `월 ${money(total)}원`;
   $('#dm-breakdown').textContent = parts.join(' · ');
 }
@@ -487,7 +546,6 @@ $('#dm-carriers').addEventListener('click', e=>{
   renderSpeedOptions();
   renderTvPlans();
   updateTotal();
-  // 모바일에서 항목 선택 시 서브바 닫기
   if (window.innerWidth<900) { unlockMobileBar(); }
 });
 
@@ -498,6 +556,7 @@ $('#dm-speeds').addEventListener('click', e=>{
   updateTotal();
 });
 
+/* 옵션 체크 */
 $('#dm-tv-toggle').addEventListener('change', e=>{
   state.tvIncluded=e.target.checked;
   if(state.carrier==='SKPOP'){ state.tvIncluded=true; e.target.checked=true; }
@@ -505,7 +564,6 @@ $('#dm-tv-toggle').addEventListener('change', e=>{
   refreshSpeedPriceLabels();
   updateTotal();
 });
-
 $('#dm-wifi-toggle').addEventListener('change', e=>{
   state.wifiIncluded=e.target.checked;
   if(state.carrier==='LG' || state.carrier==='헬로비전'){ state.wifiIncluded=true; e.target.checked=true; }
@@ -513,10 +571,27 @@ $('#dm-wifi-toggle').addEventListener('change', e=>{
   updateTotal();
 });
 
+/* TV 선택 */
 $('#dm-tv-section').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.tv) return;
   state.tv={id:btn.dataset.tv,name:btn.dataset.name,price:parseInt(btn.dataset.price,10)};
   setActive('#dm-tv-section', btn);
+  updateTotal();
+});
+
+/* 결합할인 (금액 고정) */
+$('#dm-bundle-mobile').addEventListener('click', e=>{
+  const btn=e.target.closest('.dm-btn'); if(!btn) return;
+  state.mobileDiscount=parseInt(btn.dataset.mobile,10)||0;
+  setActive('#dm-bundle-mobile', btn);
+  updateTotal();
+});
+
+/* SK 온가족할인 */
+$('#dm-family').addEventListener('click', e=>{
+  const btn=e.target.closest('.dm-btn'); if(!btn) return;
+  state.familySelection = btn.dataset.family || 'none';
+  setActive('#dm-family', btn);
   updateTotal();
 });
 
@@ -529,7 +604,6 @@ function selectCategory(catCarrier){
 document.querySelectorAll('#internetCats span').forEach(chip=>{
   chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier));
 });
-
 document.getElementById('dm-close').addEventListener('click', ()=> window.toggleInternetDetail(false));
 
 /* 초기 렌더 */
