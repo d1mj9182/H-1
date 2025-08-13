@@ -25,9 +25,15 @@
   .nav-2025-subbar-wrap{
     width:100vw;left:0;position:absolute;top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
-    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:81
+    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999 /* 모바일 고정 시도 대비 높임 */
   }
   .nav-2025-subbar-wrap.show{display:block;}
+  /* 모바일: 고정 모드 */
+  .nav-2025-subbar-wrap.lock{
+    position:fixed; /* 스크롤해도 고정 */
+    left:0; right:0;
+    /* top은 JS로 헤더 실제 높이에 맞춰 계산해서 넣음 */
+  }
   .nav-2025-subbar-wrap::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;background:transparent}
   .nav-2025-subbar-inner{max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569}
   .nav-2025-subbar-inner span{cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .12s,color .12s}
@@ -86,7 +92,7 @@
 </div>
 
 <!-- 네비 + 인터넷 카테고리 -->
-<div class="nav-2025-wrap">
+<div class="nav-2025-wrap" id="navWrap">
   <div class="nav-2025-inner">
     <ul class="nav-2025-main">
       <li><button class="nav-2025-menu-btn" aria-label="전체메뉴"><i class="fa-solid fa-bars"></i></button></li>
@@ -214,19 +220,57 @@
 </footer>
 
 <script>
-/* ===== 펼침바: 안정적 호버/탭 동작 ===== */
+/* ===== 펼침바: 안정적 호버/탭 동작 + 모바일 고정 ===== */
+const navWrap = document.getElementById('navWrap');
 const navInternet = document.getElementById('navInternet');
 const internetBar = document.getElementById('internetBar');
 let hoverTimer = null;
 const OPEN_DELAY = 0, CLOSE_DELAY = 450;
-const showBarNow = ()=>{ clearTimeout(hoverTimer); internetBar.classList.add('show'); };
-const hideBarLater = ()=>{ clearTimeout(hoverTimer); hoverTimer=setTimeout(()=>internetBar.classList.remove('show'), CLOSE_DELAY); };
-navInternet.addEventListener('pointerenter', ()=> { if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow(); });
-navInternet.addEventListener('pointerleave', hideBarLater);
-internetBar.addEventListener('pointerenter', showBarNow);
-internetBar.addEventListener('pointerleave', hideBarLater);
-navInternet.addEventListener('click', (e)=>{ if (window.innerWidth<900){ e.stopPropagation(); internetBar.classList.toggle('show'); } else { showBarNow(); }});
-document.addEventListener('click', (e)=>{ if (!internetBar.contains(e.target) && !navInternet.contains(e.target)) internetBar.classList.remove('show'); });
+
+function showBarNow(){ clearTimeout(hoverTimer); internetBar.classList.add('show'); }
+function hideBarLater(){ clearTimeout(hoverTimer); hoverTimer=setTimeout(()=>internetBar.classList.remove('show'), CLOSE_DELAY); }
+
+/* 데스크톱: hover */
+navInternet.addEventListener('pointerenter', ()=> { if (window.innerWidth>=900){ if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow(); }});
+navInternet.addEventListener('pointerleave', ()=> { if (window.innerWidth>=900) hideBarLater(); });
+internetBar.addEventListener('pointerenter', ()=> { if (window.innerWidth>=900) showBarNow(); });
+internetBar.addEventListener('pointerleave', ()=> { if (window.innerWidth>=900) hideBarLater(); });
+
+/* 모바일: 클릭 시 고정(lock) */
+function lockMobileBar(){
+  const rect = navWrap.getBoundingClientRect();
+  internetBar.style.top = (rect.bottom + window.scrollY) + 'px'; // 실제 헤더 아래에 고정
+  internetBar.classList.add('show','lock');
+}
+function unlockMobileBar(){
+  internetBar.classList.remove('lock','show');
+  internetBar.style.top = '';
+}
+navInternet.addEventListener('click', (e)=>{
+  if (window.innerWidth<900){
+    e.stopPropagation();
+    if (!internetBar.classList.contains('lock')) lockMobileBar();
+    else unlockMobileBar();
+  } else {
+    showBarNow();
+  }
+});
+
+/* 화면 회전/리사이즈 시 고정 상태면 위치 재계산 */
+window.addEventListener('resize', ()=>{
+  if (window.innerWidth<900 && internetBar.classList.contains('lock')) lockMobileBar();
+  if (window.innerWidth>=900) unlockMobileBar(); // 데스크톱 전환 시 정리
+});
+
+/* 바깥 클릭 시 닫기 */
+document.addEventListener('click', (e)=>{
+  const isOutside = !internetBar.contains(e.target) && !navInternet.contains(e.target);
+  if (window.innerWidth<900){
+    if (isOutside) unlockMobileBar();
+  }else{
+    if (isOutside) internetBar.classList.remove('show');
+  }
+});
 
 /* ===== 상단 메뉴 클릭동작 ===== */
 const smoothTo = (id)=>{ const el=document.getElementById(id); if(!el) return; window.toggleInternetDetail(false); el.scrollIntoView({behavior:'smooth',block:'start'}); };
@@ -243,7 +287,7 @@ window.toggleInternetDetail = function(show){
   if(show){ detail.scrollIntoView({behavior:'smooth', block:'start'}); }
 };
 
-/* ===== 속도 옵션 ===== */
+/* ===== 속도/TV/요금 — 기존 로직 그대로 (생략 없이 포함) ===== */
 const SPEED_OPTIONS = {
   SK: ["100","500","1000"],
   KT: ["100","500","1000"],
@@ -253,7 +297,6 @@ const SPEED_OPTIONS = {
   SKPOP: ["100","500","1000"]
 };
 
-/* ===== TV 요금제(이전과 동일) ===== */
 const TV_PLANS = {
   SK: [
     {id:"sk-184-basic",        name:"Btv 이코노미",                 channels:184, price:14300},
@@ -289,7 +332,6 @@ const TV_PLANS = {
   ]
 };
 
-/* ===== 인터넷 요금(체크박스 조합표) ===== */
 const INTERNET_MATRIX = {
   SK: {
     none:  {"100":22000,"500":33000,"1000":38500},
@@ -323,7 +365,6 @@ const INTERNET_MATRIX = {
   }
 };
 
-/* ===== 상태/유틸 ===== */
 const $ = s=>document.querySelector(s);
 const $$ = s=>document.querySelectorAll(s);
 const money = n => (n||0).toLocaleString('ko-KR');
@@ -336,7 +377,6 @@ const state = {
   tv: null
 };
 
-/* ===== 렌더링 ===== */
 function setActive(groupSel, btn){
   $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -345,9 +385,7 @@ function setActive(groupSel, btn){
 function applyCarrierRules(){
   const wifi = $('#dm-wifi-toggle');
   const tv   = $('#dm-tv-toggle');
-
-  // 기본 활성/비활성
-  wifi.disabled = false; tv.disabled = false;
+  wifi.disabled=false; tv.disabled=false;
 
   if(state.carrier==='LG' || state.carrier==='헬로비전'){
     state.wifiIncluded = true; wifi.checked = true; wifi.disabled = true;
@@ -355,13 +393,8 @@ function applyCarrierRules(){
   if(state.carrier==='SKPOP'){
     state.tvIncluded = true; tv.checked = true; tv.disabled = true;
   }
-  if(!(state.carrier==='LG' || state.carrier==='헬로비전')){
-    // 이전 캐리어가 강제 ON이었을 수 있음 → 그대로 유지
-    wifi.checked = state.wifiIncluded;
-  }
-  if(state.carrier!=='SKPOP'){
-    tv.checked = state.tvIncluded;
-  }
+  if(!(state.carrier==='LG' || state.carrier==='헬로비전')) wifi.checked = state.wifiIncluded;
+  if(state.carrier!=='SKPOP') tv.checked = state.tvIncluded;
 }
 
 function getInternetPrice(){
@@ -377,8 +410,6 @@ function getInternetPrice(){
   if(c==='SKPOP'){
     return (state.wifiIncluded ? INTERNET_MATRIX.SKPOP.wifiOn[sp] : INTERNET_MATRIX.SKPOP.wifiOff[sp]) || 0;
   }
-
-  // SK / KT / 스카이라이프
   const key = (state.tvIncluded && state.wifiIncluded) ? 'both'
             : (state.tvIncluded ? 'tv' : (state.wifiIncluded ? 'wifi' : 'none'));
   return INTERNET_MATRIX[c][key][sp] || 0;
@@ -404,12 +435,11 @@ function renderSpeedOptions(){
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
     const sp = btn.dataset.speed;
-    // 임시로 버튼 속도 변경하여 가격 계산
     const prev = state.speed; state.speed = sp;
     const price = getInternetPrice();
     const small = btn.querySelector('small.p');
     if(small) small.textContent = `월 ${money(price)}원`;
-    state.speed = prev; // 복구
+    state.speed = prev;
   });
 }
 
@@ -434,14 +464,12 @@ function renderTvPlans(){
 
 function updateTotal(){
   let total=0; const parts=[];
-  // 인터넷(체크박스 조합 반영 가격)
   const internet = getInternetPrice();
   if(internet>0){
     const label = state.speed==='1000'?'1G':(state.speed+'M');
     parts.push(`인터넷 ${label} ${money(internet)}원`);
     total += internet;
   }
-  // TV 요금제
   if(state.tvIncluded && state.tv){
     total += state.tv.price;
     parts.push(`TV(${state.tv.name}) ${money(state.tv.price)}원`);
@@ -459,6 +487,8 @@ $('#dm-carriers').addEventListener('click', e=>{
   renderSpeedOptions();
   renderTvPlans();
   updateTotal();
+  // 모바일에서 항목 선택 시 서브바 닫기
+  if (window.innerWidth<900) { unlockMobileBar(); }
 });
 
 $('#dm-speeds').addEventListener('click', e=>{
@@ -470,7 +500,6 @@ $('#dm-speeds').addEventListener('click', e=>{
 
 $('#dm-tv-toggle').addEventListener('change', e=>{
   state.tvIncluded=e.target.checked;
-  // SKPOP은 강제 ON
   if(state.carrier==='SKPOP'){ state.tvIncluded=true; e.target.checked=true; }
   renderTvPlans();
   refreshSpeedPriceLabels();
@@ -479,7 +508,6 @@ $('#dm-tv-toggle').addEventListener('change', e=>{
 
 $('#dm-wifi-toggle').addEventListener('change', e=>{
   state.wifiIncluded=e.target.checked;
-  // LG/헬로비전은 강제 ON
   if(state.carrier==='LG' || state.carrier==='헬로비전'){ state.wifiIncluded=true; e.target.checked=true; }
   refreshSpeedPriceLabels();
   updateTotal();
