@@ -24,15 +24,13 @@
   /* 펼침바: 갭 제거 + 브릿지 추가 */
   .nav-2025-subbar-wrap{
     width:100vw;left:0;position:absolute;
-    top:calc(100% - 1px); /* ← 상단과 1px 겹치기 */
+    top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:81
   }
   .nav-2025-subbar-wrap.show{display:block;}
-  /* ← 위쪽으로 10px 투명 브릿지 (마우스 이동 중 닫힘 방지) */
   .nav-2025-subbar-wrap::before{
-    content:""; position:absolute; left:0; right:0; top:-10px; height:10px;
-    background:transparent; /* hover 영역만 제공 */
+    content:""; position:absolute; left:0; right:0; top:-10px; height:10px; background:transparent;
   }
   .nav-2025-subbar-inner{max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569}
   .nav-2025-subbar-inner span{cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .12s,color .12s}
@@ -71,7 +69,6 @@
   .dm-break{font-size:13px;color:#444;margin-top:6px}
   .dm-help{font-size:12px;color:#666;margin-top:4px}
 
-  /* 개인정보 아코디언 */
   .privacy-toggle{color:#2563eb;cursor:pointer;user-select:none;margin-left:4px}
   .privacy-panel{max-height:0;overflow:hidden;transition:max-height .28s ease;background:#f8fafc;border:1px solid #dbeafe;border-radius:10px;margin-top:8px}
   .privacy-panel.open{max-height:420px;overflow:auto}
@@ -250,40 +247,17 @@
 const navInternet = document.getElementById('navInternet');
 const internetBar = document.getElementById('internetBar');
 let hoverTimer = null;
-
-// 닫힘 지연을 충분히 줘서 이동 중 닫히지 않게
-const OPEN_DELAY = 0;
-const CLOSE_DELAY = 450;
-
+const OPEN_DELAY = 0, CLOSE_DELAY = 450;
 const showBarNow = ()=>{ clearTimeout(hoverTimer); internetBar.classList.add('show'); };
-const hideBarLater = ()=>{
-  clearTimeout(hoverTimer);
-  hoverTimer = setTimeout(()=> internetBar.classList.remove('show'), CLOSE_DELAY);
-};
-
-navInternet.addEventListener('pointerenter', ()=> {
-  if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow();
-});
+const hideBarLater = ()=>{ clearTimeout(hoverTimer); hoverTimer=setTimeout(()=>internetBar.classList.remove('show'), CLOSE_DELAY); };
+navInternet.addEventListener('pointerenter', ()=> { if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow(); });
 navInternet.addEventListener('pointerleave', hideBarLater);
 internetBar.addEventListener('pointerenter', showBarNow);
 internetBar.addEventListener('pointerleave', hideBarLater);
+navInternet.addEventListener('click', (e)=>{ if (window.innerWidth<900){ e.stopPropagation(); internetBar.classList.toggle('show'); } else { showBarNow(); }});
+document.addEventListener('click', (e)=>{ if (!internetBar.contains(e.target) && !navInternet.contains(e.target)) internetBar.classList.remove('show'); });
 
-// 모바일: 탭으로 토글 + 바깥 클릭 시 닫기
-navInternet.addEventListener('click', (e)=>{
-  if (window.innerWidth < 900) {
-    e.stopPropagation();
-    internetBar.classList.toggle('show');
-  } else {
-    showBarNow(); // 데스크톱 클릭으로도 확실히 열기
-  }
-});
-document.addEventListener('click', (e)=>{
-  if (!internetBar.contains(e.target) && !navInternet.contains(e.target)) {
-    internetBar.classList.remove('show');
-  }
-});
-
-/* ===== 상단 메뉴 클릭동작(가전렌탈/사은품/후기) ===== */
+/* ===== 상단 메뉴 클릭동작 ===== */
 const smoothTo = (id)=>{ const el=document.getElementById(id); if(!el) return; window.toggleInternetDetail(false); el.scrollIntoView({behavior:'smooth',block:'start'}); };
 document.getElementById('navRental').addEventListener('click', ()=> smoothTo('sec2'));
 document.getElementById('navGifts').addEventListener('click',  ()=> smoothTo('sec4'));
@@ -317,11 +291,16 @@ const INTERNET = {
   SKPOP: { "100":22000, "500":28600, "1000":34100 }
 };
 
+/* ======= ⬇⬇⬇  여기만 변경(SKT TV 7종)  ⬇⬇⬇ ======= */
 const TV_PLANS = {
   SK: [
-    {id:"sk-eco",name:"Btv 이코노미",channels:184,price:14300},
-    {id:"sk-std",name:"Btv 스탠다드",channels:226,price:17600},
-    {id:"sk-all",name:"Btv ALL",channels:252,price:20900}
+    {id:"sk-184-basic",        name:"Btv 이코노미",                 channels:184, price:14300},
+    {id:"sk-226-standard",     name:"Btv 스탠다드",                 channels:226, price:17600},
+    {id:"sk-252-all",          name:"Btv 올",                        channels:252, price:20900},
+    {id:"sk-222-standard-plus",name:"Btv 스탠다드 플러스",           channels:222, price:25300},
+    {id:"sk-252-all-plus",     name:"Btv 올 플러스",                 channels:252, price:26400},
+    {id:"sk-252-std-nf-prem",  name:"Btv 스탠다드 넷플릭스 프리미엄", channels:252, price:32900},
+    {id:"sk-252-all-nf-prem",  name:"Btv 올 넷플릭스 프리미엄",      channels:252, price:35400}
   ],
   KT: [
     {id:"kt-basic",name:"올레tv 베이직",channels:236,price:16500},
@@ -347,6 +326,7 @@ const TV_PLANS = {
     {id:"skp-230",name:"Btv pop230",channels:231,price:14300}
   ]
 };
+/* ======= ⬆⬆⬆  여기만 변경(SKT TV 7종)  ⬆⬆⬆ ======= */
 
 /* ===== 상태/유틸 ===== */
 const $ = s=>document.querySelector(s);
@@ -430,19 +410,16 @@ function updateTotal(){
 }
 
 /* ===== 이벤트 ===== */
-// 상세 통신사
 $('#dm-carriers').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.carrier = btn.dataset.carrier;
   setActive('#dm-carriers', btn);
   renderSpeedOptions(); renderTvPlans(); refreshStbLabel(); updateTotal();
 });
-// 속도 선택
 $('#dm-speeds').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.speed) return;
   state.speed=btn.dataset.speed; setActive('#dm-speeds #dm-speed-options', btn); updateTotal();
 });
-// 옵션
 $('#dm-tv-toggle').addEventListener('change', e=>{ state.tvIncluded=e.target.checked; renderTvPlans(); });
 $('#dm-phone-toggle').addEventListener('change', e=>{ state.phone=e.target.checked; updateTotal(); });
 $('#dm-wifi-toggle').addEventListener('change', e=>{
@@ -454,12 +431,10 @@ $('#dm-wifi-section').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.wifiPrice=parseInt(btn.dataset.wifi,10)||0; setActive('#dm-wifi-section', btn); updateTotal();
 });
-// TV 선택
 $('#dm-tv-section').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.tv) return;
   state.tv={id:btn.dataset.tv,name:btn.dataset.name,price:parseInt(btn.dataset.price,10)}; setActive('#dm-tv-section', btn); updateTotal();
 });
-// 결합/셋톱
 $('#dm-bundle-mobile').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.mobileDiscount=parseInt(btn.dataset.mobile,10)||0; setActive('#dm-bundle-mobile', btn); updateTotal();
@@ -469,10 +444,10 @@ $('#dm-bundle-stb').addEventListener('click', e=>{
   btn.classList.toggle('active'); state.stbOn=btn.classList.contains('active'); updateTotal();
 });
 
-// 카테고리(텍스트형) → 상세 연동
+/* 카테고리 → 상세 연동 */
 function selectCategory(catCarrier){
   window.toggleInternetDetail(true);
-  const targetBtn = Array.from($$('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier===catCarrier);
+  const targetBtn = Array.from(document.querySelectorAll('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier===catCarrier);
   if(targetBtn){ targetBtn.click(); }
   refreshStbLabel();
 }
@@ -480,13 +455,12 @@ document.querySelectorAll('#internetCats span').forEach(chip=>{
   chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier));
 });
 
-// ← 목록으로
 document.getElementById('dm-close').addEventListener('click', ()=> window.toggleInternetDetail(false));
 
-/* ===== 초기 ===== */
+/* 초기 렌더 */
 renderSpeedOptions(); renderTvPlans(); refreshStbLabel(); updateTotal();
 
-/* ===== 폼/아코디언 ===== */
+/* 폼/아코디언 */
 const fixedFormWrapper=document.getElementById('fixedFormWrapper');
 const consultOpenBtn=document.getElementById('consultOpenBtn');
 const consultCloseBtn=document.getElementById('consultCloseBtn');
@@ -498,7 +472,7 @@ if(accToggle && accPanel){ const toggle=()=>{ const willOpen=!accPanel.classList
 
 document.getElementById('consultForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
-  const data={ name:$('#name').value.trim(), phone:$('#phone').value.trim(), category:$('#category').value, agree:$('#agree').checked, marketingAgree:$('#mktAgree').checked, agreeAt:new Date().toISOString() };
+  const data={ name:document.querySelector('#name').value.trim(), phone:document.querySelector('#phone').value.trim(), category:document.querySelector('#category').value, agree:document.querySelector('#agree').checked, marketingAgree:document.querySelector('#mktAgree').checked, agreeAt:new Date().toISOString() };
   if(!data.agree){ alert('개인정보 수집·이용(필수)에 동의해 주세요.'); return; }
   try{
     await fetch('https://airtable-proxy-oyrb.vercel.app/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
