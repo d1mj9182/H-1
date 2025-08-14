@@ -30,14 +30,48 @@
   .nav-2025-subbar-wrap.show{display:block;}
   .nav-2025-subbar-wrap.lock{position:fixed;left:0;right:0;}
   .nav-2025-subbar-wrap::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;background:transparent}
-  .nav-2025-subbar-inner{max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569}
-  .nav-2025-subbar-inner span{cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .12s,color .12s}
+
+  /* ▼ 카테고리 칩: 항상 포인터 + 선택 방지 */
+  .nav-2025-subbar-inner{
+    max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;
+    padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569;
+    user-select:none; -webkit-user-select:none;
+  }
+  .nav-2025-subbar-inner span{
+    cursor:pointer; user-select:none; -webkit-user-select:none; -ms-user-select:none;
+    padding:4px 6px;border-radius:6px;transition:background .12s,color .12s
+  }
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
-  @media(max-width:900px){.nav-2025-inner{gap:16px;font-size:18px}}
+
+  /* 모바일: 상단 카테고리 바 가로 스크롤(스크롤 중에만 바 표시) */
+  @media(max-width:900px){
+    .nav-2025-inner{gap:16px;font-size:18px}
+    #internetCats{
+      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; gap:10px;
+      scrollbar-width:none; -ms-overflow-style:none;
+    }
+    #internetCats::-webkit-scrollbar{height:0}
+    #internetCats.showbar{scrollbar-width:thin}
+    #internetCats.showbar::-webkit-scrollbar{height:6px}
+    #internetCats span{scroll-snap-align:center}
+  }
 
   /* ------------ 상세/폼/푸터 ------------ */
-  #consultOpenBtn{position:fixed;left:50%;transform:translateX(-50%);bottom:38px;z-index:51;background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;font-size:1.05rem;font-weight:700;padding:.9rem 2rem;border-radius:2rem;border:none;box-shadow:0 2px 14px rgba(59,130,246,.13);cursor:pointer}
-  #fixedFormWrapper{position:fixed;left:0;right:0;bottom:0;z-index:50;background:linear-gradient(90deg,#2563eb,#3b82f6);border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;transform:translateY(100%);opacity:0;pointer-events:none}
+  /* 상담신청 버튼: 하단 중앙(원복) + 크게 */
+  #consultOpenBtn{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:28px;z-index:51;
+    background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;
+    font-size:1.6rem;font-weight:800;padding:1.2rem 2.8rem;border-radius:2.4rem;border:none;
+    box-shadow:0 2px 14px rgba(59,130,246,.18);cursor:pointer
+  }
+  /* 맨위로: 우측 하단 고정 */
+  #scrollTopBtn{
+    position:fixed;right:18px;bottom:28px;z-index:51;
+    background:linear-gradient(90deg,#0ea5e9,#22d3ee); color:#fff; font-size:0.98rem; font-weight:700;
+    padding:.85rem 1.2rem; border-radius:999px; border:none; box-shadow:0 2px 14px rgba(2,132,199,.18); cursor:pointer
+  }
+
+  #fixedFormWrapper{position:fixed;left:0;right:0;bottom:0;z-index:52;background:linear-gradient(90deg,#2563eb,#3b82f6);border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;transform:translateY(100%);opacity:0;pointer-events:none}
   #fixedFormWrapper.active{transform:translateY(0);opacity:1;pointer-events:auto}
   .consult-form-inner{background:#fff;border-radius:.8rem;box-shadow:0 4px 16px rgba(59,130,246,.1);padding:1.2rem .8rem;display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;max-width:680px;margin:1.1rem auto}
   .consult-form-inner input,.consult-form-inner select{min-width:100px;font-size:1rem;padding:.55rem .7rem;border:2px solid #93c5fd;border-radius:.55rem;background:#f8fafc}
@@ -64,7 +98,6 @@
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
   .dm-break{font-size:13px;color:#444;margin-top:6px}
-  /* 안내 박스: 더 작고, 더 연하게 */
   .dm-note{margin-top:10px;border:1px dashed #e2e8f0;background:#fafbff;border-radius:12px;padding:10px 12px;color:#6b7280;font-size:12px}
   .dm-note .tit{display:flex;align-items:center;gap:8px;font-weight:700;color:#6b7280;font-size:13px;margin-bottom:4px}
   .dm-note ul{margin-left:16px;list-style:circle}
@@ -73,8 +106,20 @@
 
   .privacy-toggle{color:#2563eb;cursor:pointer;user-select:none;margin-left:4px}
   .privacy-panel{max-height:0;overflow:hidden;transition:max-height .28s ease;background:#f8fafc;border:1px solid #dbeafe;border-radius:10px;margin-top:8px}
-  .privacy-panel.open{max-height:420px;overflow:auto}
+  .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
+
+  /* 가로 자동 스크롤 컨테이너: 기본 숨김, 스크롤 중에만 바 표시 */
+  .x-scroll{overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;
+            scrollbar-width:none; -ms-overflow-style:none;}
+  .x-scroll::-webkit-scrollbar{height:0}
+  .x-scroll.showbar{scrollbar-width:thin}
+  .x-scroll.showbar::-webkit-scrollbar{height:6px}
+
+  /* ▼ ‘추천’ 뱃지 안잘리게 여백 보강 */
+  #dm-carriers{padding-bottom:20px;}
+  #dm-speeds{margin-top:36px;}
+  #dm-speed-options{padding-top:12px; overflow:visible;}
 </style>
 </head>
 <body>
@@ -116,46 +161,47 @@
 <!-- ▼ 상세 래퍼 -->
 <section id="internet-detail" class="custom-section" style="display:none;">
   <div class="section-inner">
-    <div class="w-full flex justify-end mb-2" style="margin-top:-6px;">
-      <button id="dm-close" type="button" class="dm-btn">← 목록으로</button>
-    </div>
 
+    <!-- 상세 본문 -->
     <section id="internet-comp" class="dm-wrap" aria-label="인터넷 - 상세">
-      <!-- 통신사 버튼 -->
-      <div class="dm-row" id="dm-carriers">
+
+      <!-- 통신사 버튼(가로 스크롤) -->
+      <div class="dm-row">
         <div class="dm-title">통신사</div>
-        <span class="dm-btn active" data-carrier="SK"><b>SK</b></span>
-        <span class="dm-btn" data-carrier="KT"><b>KT</b></span>
-        <span class="dm-btn" data-carrier="LG"><b>LG</b></span>
-        <span class="dm-btn" data-carrier="스카이라이프"><b>스카이라이프</b></span>
-        <span class="dm-btn" data-carrier="헬로비전"><b>헬로비전</b></span>
-        <span class="dm-btn" data-carrier="SKPOP"><b>SKPOP(알뜰)</b></span>
+        <div id="dm-carriers" class="x-scroll">
+          <span class="dm-btn active" data-carrier="SK"><b>SK</b></span>
+          <span class="dm-btn" data-carrier="KT"><b>KT</b></span>
+          <span class="dm-btn" data-carrier="LG"><b>LG</b></span>
+          <span class="dm-btn" data-carrier="스카이라이프"><b>스카이라이프</b></span>
+          <span class="dm-btn" data-carrier="헬로비전"><b>헬로비전</b></span>
+          <span class="dm-btn" data-carrier="SKPOP"><b>SKPOP(알뜰)</b></span>
+        </div>
       </div>
 
-      <!-- 속도 -->
+      <!-- 속도(가로 스크롤) -->
       <div class="dm-row" id="dm-speeds">
         <div class="dm-title">인터넷 속도</div>
-        <div id="dm-speed-options"></div>
+        <div id="dm-speed-options" class="x-scroll"></div>
       </div>
 
       <!-- 옵션: TV / Wi‑Fi -->
       <div class="dm-row">
         <label><input id="dm-tv-toggle" class="dm-check" type="checkbox" checked>TV 포함</label>
-        <label><input id="dm-wifi-toggle" class="dm-check" type="checkbox">와이파이 포함</label>
+        <label><input id="dm-wifi-toggle" class="dm-check" type="checkbox" checked>와이파이 포함</label>
       </div>
 
-      <!-- TV 요금제 -->
+      <!-- TV 요금제(가로 스크롤) -->
       <div class="dm-row" id="dm-tv-section">
         <div class="dm-title">TV 요금제</div>
-        <div id="dm-tv-options"></div>
+        <div id="dm-tv-options" class="x-scroll"></div>
       </div>
 
-      <!-- 결합/할인 -->
+      <!-- 결합/할인(가로 스크롤) -->
       <div class="dm-row" id="dm-discounts">
         <div class="dm-title">결합 / 할인</div>
 
         <!-- 1) 공통 결합할인 -->
-        <div id="dm-bundle-mobile">
+        <div id="dm-bundle-mobile" class="x-scroll">
           <span class="dm-btn active" data-mobile="0"><b>결합 없음</b></span>
           <span class="dm-btn" data-mobile="-3300"><b>결합할인</b><small>-3,300원</small></span>
           <span class="dm-btn" data-mobile="-5500"><b>결합할인</b><small>-5,500원</small></span>
@@ -166,7 +212,7 @@
         <!-- 2) SK 전용 온가족할인 -->
         <div id="dm-family-wrap" style="margin-top:10px;">
           <div style="font-weight:700;margin:8px 4px 6px 4px;color:#334155">SK 온가족할인</div>
-          <div id="dm-family">
+          <div id="dm-family" class="x-scroll">
             <span class="dm-btn active" data-family="none"><b>미적용</b></span>
             <span class="dm-btn" data-family="30"><b>30% 할인</b><small>속도별 자동 적용</small></span>
             <span class="dm-btn" data-family="50"><b>50% 할인</b><small>속도별 자동 적용</small></span>
@@ -202,8 +248,11 @@
 
 <div id="footer-spacer"></div>
 
-<!-- 상담신청 버튼/폼 -->
+<!-- 하단 고정 버튼들 -->
 <button id="consultOpenBtn" aria-label="상담신청 열기">상담신청</button>
+<button id="scrollTopBtn" aria-label="맨위로">맨위로</button>
+
+<!-- 상담신청 폼 -->
 <div id="fixedFormWrapper" aria-label="상담신청 폼">
   <button id="consultCloseBtn" aria-label="상담신청 닫기">&times;</button>
   <form id="consultForm" class="consult-form-inner" aria-describedby="privacyHelp">
@@ -227,12 +276,27 @@
       <button type="submit">신청</button>
     </div>
     <div id="privacyHelp" class="text-xs text-gray-500 w-full mt-1">상담 진행을 위해 최소한의 개인정보가 수집·이용되며, 목적 달성 후 지체 없이 파기됩니다.</div>
+
     <div id="privacyAccordion" class="privacy-panel" role="region" aria-label="개인정보 처리 안내">
       <div class="privacy-panel-inner">
-        <p><strong>개인정보 처리 안내(요약)</strong></p>
-        <p>수집항목: 성함, 연락처, 신청상품 · 이용목적: 상담 및 계약 진행 · 보유기간: 목적 달성 후 파기</p>
+        <p><strong>개인정보 처리 안내(상세)</strong></p>
+        <ul>
+          <li><b>수집항목</b>: 성함, 연락처, 신청상품, 상담 메모(요청사항/통화기록 요약), 접수일시, 접수채널</li>
+          <li><b>수집방법</b>: 온라인 신청서, 유선상담(상담원이 수기 입력)</li>
+          <li><b>이용목적</b>: 가입상담, 설치 일정 조율, 요금제/사은품 안내, 본인확인 및 계약 체결·이행</li>
+          <li><b>보유·이용기간</b>: 목적 달성 후 지체 없이 파기. 단, 분쟁 예방 및 처리 목적의 최소 정보는 <u>3년</u> 보관 후 파기</li>
+          <li><b>파기방법</b>: 전자파일은 완전삭제, 출력물은 분쇄 또는 소각</li>
+          <li><b>처리위탁</b>: 상담/접수 시스템 운영 및 저장(Airtable·국내 대행 서버), 알림/연락 발송. 위탁사는 계약으로 기술·관리적 보호조치 이행</li>
+          <li><b>제3자 제공</b>: 선택한 통신사(SK/KT/LG/스카이라이프/헬로비전 등) 및 설치 대행점에 한해 <i>가입/설치 진행 목적</i>으로만 제공</li>
+          <li><b>해외 이전</b>: 해외 서버 사용 시 계약 및 암호화 등 보호조치 후 처리, 세부 내용은 요청 시 고지</li>
+          <li><b>동의 거부 권리</b>: 동의 거부 가능하나, 거부 시 상담 및 가입 진행이 제한될 수 있음</li>
+          <li><b>정보주체 권리</b>: 열람·정정·삭제·처리정지 요구 및 민원 제기 가능(연락처: 대표번호 1661-9182)</li>
+          <li><b>마케팅 수신동의(선택)</b>: 이벤트/프로모션 정보 제공에 한해 별도 동의 시에만 이용</li>
+          <li><b>보안조치</b>: 전송·저장 암호화, 접근권한 최소화, 접속기록 보관 및 주기적 점검</li>
+        </ul>
       </div>
     </div>
+
     <div class="flex items-center gap-2 text-sm text-gray-600 w-full">
       <input id="mktAgree" type="checkbox"><label for="mktAgree">혜택/프로모션 안내 수신 동의(선택)</label>
     </div>
@@ -322,7 +386,6 @@ const SPEED_OPTIONS = {
   SKPOP: ["100","500","1000"]
 };
 
-/* 통신사별 TV 요금제 — 각자 분리 보장 */
 const TV_PLANS = {
   SK: [
     {id:"sk-184-basic",        name:"Btv 이코노미",                 channels:184, price:14300},
@@ -407,7 +470,7 @@ const state = {
   carrier: 'SK',
   speed: null,
   tvIncluded: true,
-  wifiIncluded: false,
+  wifiIncluded: true,   // 기본 와이파이 ON
   tv: null,
   mobileDiscount: 0,        // 공통 결합할인
   familySelection: 'none'   // SK 온가족 미적용/30/50
@@ -428,9 +491,9 @@ function applyCarrierRules(){
   if(state.carrier!=='SK'){ state.familySelection='none'; const noneBtn = document.querySelector('#dm-family [data-family="none"]'); if(noneBtn){ setActive('#dm-family', noneBtn); } }
 
   if(state.carrier==='LG' || state.carrier==='헬로비전'){
-    state.wifiIncluded = true; wifi.checked = true; wifi.disabled = true;
+    state.wifiIncluded = true; wifi.checked = true; wifi.disabled = true; // 강제 ON
   } else {
-    wifi.checked = state.wifiIncluded;
+    wifi.checked = state.wifiIncluded; // 기본 ON 유지
   }
   if(state.carrier==='SKPOP'){
     state.tvIncluded = true; tv.checked = true; tv.disabled = true;
@@ -505,7 +568,6 @@ function renderTvPlans(){
   }
   section.style.display='';
 
-  /* 핵심: 현재 통신사(state.carrier)에 맞는 TV_PLANS만 사용 */
   const currentCarrier = state.carrier;
   const plans = Array.isArray(TV_PLANS[currentCarrier]) ? TV_PLANS[currentCarrier] : [];
 
@@ -624,7 +686,22 @@ function selectCategory(catCarrier){
 document.querySelectorAll('#internetCats span').forEach(chip=>{
   chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier));
 });
-document.getElementById('dm-close').addEventListener('click', ()=> window.toggleInternetDetail(false));
+
+/* ===== 자동 스크롤바 표시/숨김 (스와이프/스크롤 중에만 보이기) ===== */
+function attachAutoScrollbar(el){
+  if(!el) return;
+  let t=null;
+  const show=()=>el.classList.add('showbar');
+  const hide=()=>el.classList.remove('showbar');
+  const kick=()=>{ show(); if(t) clearTimeout(t); t=setTimeout(hide, 900); };
+  el.addEventListener('scroll', kick, {passive:true});
+  el.addEventListener('mouseenter', show);
+  el.addEventListener('mouseleave', hide);
+  el.addEventListener('touchstart', show, {passive:true});
+  el.addEventListener('touchend', ()=>{ kick(); }, {passive:true});
+}
+attachAutoScrollbar(document.getElementById('internetCats'));
+document.querySelectorAll('.x-scroll').forEach(attachAutoScrollbar);
 
 /* 초기 렌더 */
 applyCarrierRules();
@@ -632,19 +709,25 @@ renderSpeedOptions();
 renderTvPlans();
 updateTotal();
 
-/* 폼/아코디언 */
+/* 상담신청 버튼/폼 */
 const fixedFormWrapper=document.getElementById('fixedFormWrapper');
 const consultOpenBtn=document.getElementById('consultOpenBtn');
 const consultCloseBtn=document.getElementById('consultCloseBtn');
 consultOpenBtn.addEventListener('click', ()=>{ fixedFormWrapper.classList.add('active'); consultOpenBtn.style.display='none'; });
 consultCloseBtn.addEventListener('click', ()=>{ fixedFormWrapper.classList.remove('active'); consultOpenBtn.style.display='flex'; });
 document.addEventListener('keydown', (e)=>{ if(e.key==="Escape" && fixedFormWrapper.classList.contains('active')){ fixedFormWrapper.classList.remove('active'); consultOpenBtn.style.display='flex'; }});
+
+/* 맨위로 */
+document.getElementById('scrollTopBtn').addEventListener('click', ()=>{ window.scrollTo({top:0,behavior:'smooth'}); });
+
+/* 아코디언 */
 const accToggle=document.getElementById('privacyAccordionToggle'); const accPanel=document.getElementById('privacyAccordion');
 if(accToggle && accPanel){
   const toggle=()=>{ const willOpen=!accPanel.classList.contains('open'); accPanel.classList.toggle('open',willOpen); accToggle.setAttribute('aria-expanded', String(willOpen)); accToggle.textContent=willOpen?'[닫기]':'[더보기]'; };
   accToggle.addEventListener('click', toggle);
 }
 
+/* 폼 제출 */
 document.getElementById('consultForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const data={
