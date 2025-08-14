@@ -28,7 +28,6 @@
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
   }
   .nav-2025-subbar-wrap.show{display:block;}
-  /* lock(고정) 클래스는 더이상 모바일에서 사용하지 않음 */
 
   /* ▼ 카테고리 칩: 항상 포인터 + 선택 방지 */
   .nav-2025-subbar-inner{
@@ -341,6 +340,7 @@
 const navWrap = document.getElementById('navWrap');
 const navInternet = document.getElementById('navInternet');
 const internetBar = document.getElementById('internetBar');
+const internetCats = document.getElementById('internetCats');
 let hoverTimer = null;
 const OPEN_DELAY = 0, CLOSE_DELAY = 450;
 
@@ -353,11 +353,31 @@ navInternet.addEventListener('pointerleave', ()=> { if (window.innerWidth>=900) 
 internetBar.addEventListener('pointerenter', ()=> { if (window.innerWidth>=900) showBarNow(); });
 internetBar.addEventListener('pointerleave', ()=> { if (window.innerWidth>=900) hideBarLater(); });
 
-/* 모바일: 클릭 시 단순 토글(고정 lock 제거 → 스크롤 따라오지 않음) */
+/* ===== 모바일: 카테고리 바 토글 + 선택된 칩으로 자동 스크롤(센터 정렬) ===== */
+function scrollCatsToSelected(){
+  if (window.innerWidth>=900) return; // 모바일 전용
+  const selectedCarrier = state.carrier || 'SK';
+  const chip = Array.from(internetCats.querySelectorAll('span')).find(s=>s.dataset.carrier===selectedCarrier);
+  if(!chip) return;
+  const wrapRect = internetCats.getBoundingClientRect();
+  const chipRect = chip.getBoundingClientRect();
+  const currentLeft = internetCats.scrollLeft;
+  const targetCenter = chip.offsetLeft + chipRect.width/2;
+  const scrollTo = targetCenter - wrapRect.width/2;
+  internetCats.scrollTo({left: scrollTo, behavior: 'smooth'});
+  // 스크롤바도 잠깐 보여주기
+  internetCats.classList.add('showbar');
+  setTimeout(()=>internetCats.classList.remove('showbar'), 900);
+}
+
 navInternet.addEventListener('click', (e)=>{
   if (window.innerWidth<900){
     e.stopPropagation();
-    internetBar.classList.toggle('show'); // 고정없이 열고/닫기만
+    const willOpen = !internetBar.classList.contains('show');
+    internetBar.classList.toggle('show');
+    if (willOpen) { // 열릴 때 자동 스크롤
+      requestAnimationFrame(scrollCatsToSelected);
+    }
   } else {
     showBarNow();
   }
@@ -367,8 +387,7 @@ window.addEventListener('resize', ()=>{
 });
 document.addEventListener('click', (e)=>{
   const isOutside = !internetBar.contains(e.target) && !navInternet.contains(e.target);
-  if (window.innerWidth<900){ if (isOutside) internetBar.classList.remove('show'); }
-  else { if (isOutside) internetBar.classList.remove('show'); }
+  if (isOutside) internetBar.classList.remove('show');
 });
 
 /* ===== 상단 메뉴 클릭동작 ===== */
@@ -759,4 +778,3 @@ document.getElementById('consultForm').addEventListener('submit', async (e)=>{
 </script>
 </body>
 </html>
-```
