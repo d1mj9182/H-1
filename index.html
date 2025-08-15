@@ -45,21 +45,22 @@
   }
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
 
-  /* 모바일: 상단 1차 메뉴/카테고리 바 — 기본 스크롤바 숨기고 유사바 사용 */
+  /* === 모바일 전용: 상단탭/카테고리 가로스크롤 + 스크롤바 자동 숨김 === */
   @media(max-width:900px){
     .nav-2025-inner{gap:16px;font-size:18px}
+
+    /* 1차 탭(인터넷/렌탈/후기...) */
     .nav-2025-main{
       overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;
       scrollbar-width:none; -ms-overflow-style:none; padding-bottom:6px; position:relative;
-      touch-action: pan-x;
-      margin-left:0;margin-right:0;
+      touch-action: pan-x; margin-left:0;margin-right:0;
     }
     .nav-2025-main::-webkit-scrollbar{display:none;height:0}
 
+    /* 2차 카테고리 칩(SKT/LG/...) */
     #internetCats{
-      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; gap:10px;
-      scrollbar-width:none; -ms-overflow-style:none; position:relative;
-      touch-action: pan-x;
+      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
+      gap:10px; scrollbar-width:none; -ms-overflow-style:none; position:relative; touch-action: pan-x;
       margin-left:0;margin-right:0;
     }
     #internetCats::-webkit-scrollbar{display:none;height:0}
@@ -581,7 +582,7 @@ function installGhostbar(container){
 function setupMobileGhostbars(){
   if (window.innerWidth >= 901) return;
   installGhostbar(document.getElementById('topMainTabs'));
-  installGhostbar(document.getElementById('internetCats'));
+  installGhostbar(document.getElementById('internetCats')); /* ← 카테고리 칩 고스트바 확실히 설치 */
   document.querySelectorAll('.x-scroll').forEach(installGhostbar);
 }
 setupMobileGhostbars();
