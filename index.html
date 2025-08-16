@@ -58,7 +58,7 @@
     .nav-2025-main::-webkit-scrollbar{display:none;height:0}
 
     /* 2차 카테고리 칩(SKT/LG/...) */
-    .nav-2025-subbar-inner{padding:4px 8px 12px 8px} /* 모바일에서 왼쪽 패딩 축소 */
+    .nav-2025-subbar-inner{padding:4px 8px 12px 8px}
     #internetCats{
       overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
       gap:10px; scrollbar-width:none; -ms-overflow-style:none; position:relative; touch-action: pan-x;
@@ -148,7 +148,8 @@
   /* ‘추천’ 뱃지 안잘리게 여백 */
   #dm-carriers{padding-bottom:20px;}
   #dm-speeds{margin-top:36px;}
-  #dm-speed-options{padding-top:12px; overflow:visible;}
+  /* ★핵심 수정: 가로 스크롤 유지 + 배지위로는 보이게 */
+  #dm-speed-options{padding-top:12px; overflow-x:auto; overflow-y:visible;}
 
   /* ===== 모바일 유사(ghost) 스크롤바 ===== */
   @media (max-width:900px){
@@ -171,14 +172,11 @@
     .x-scroll{ padding: 0 var(--endpad) 14px 0; scroll-padding-inline-end: var(--endpad); -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
     .x-scroll::after{ content:""; display:inline-block; width: var(--endpad); height:1px; }
     .x-scroll > .dm-btn{ margin-right:8px; }
-    #dm-carriers{padding-left:8px} /* 통신사 줄 왼쪽 약간만 확보 */
+    #dm-carriers{padding-left:8px}
   }
 
   /* ===== 최종금액 라인: 가로 스크롤 전용 래퍼 ===== */
-  #dm-total-scroll .total-line{
-    display:inline-flex; align-items:baseline; gap:12px;
-    min-width:max-content; white-space:nowrap;
-  }
+  #dm-total-scroll .total-line{display:inline-flex; align-items:baseline; gap:12px; min-width:max-content; white-space:nowrap;}
   #dm-total-scroll{ margin-bottom:8px; }
 
   /* 데스크탑 스크롤바 가독 약간 ↑ */
@@ -407,7 +405,6 @@ function showGhostbar(container){
     track._hideT = setTimeout(()=>track.classList.remove('show'), 900);
   }
 }
-
 function scrollCatsToSelected(){
   if (window.innerWidth>=900) return;
   const selectedCarrier = state.carrier || 'SK';
@@ -585,16 +582,15 @@ function selectCategory(catCarrier){
 }
 document.querySelectorAll('#internetCats span').forEach(chip=> chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier)));
 
-/* ===== 데스크탑: 실제 스크롤바 자동 표시/숨김 (특정 영역 제외) ===== */
-const DESKTOP_NO_SCROLLBAR_IDS = new Set(['topMainTabs','internetCats']); // ← 이곳들은 데스크탑에서 절대 스크롤바/높이 변경 안함
+/* ===== 데스크탑: 자동 스크롤바(특정 영역 제외) ===== */
+const DESKTOP_NO_SCROLLBAR_IDS = new Set(['topMainTabs','internetCats']);
 function attachAutoScrollbarDesktop(el){
   if(!el) return; if (window.innerWidth < 901) return;
-  if (DESKTOP_NO_SCROLLBAR_IDS.has(el.id)) return; // 제외
+  if (DESKTOP_NO_SCROLLBAR_IDS.has(el.id)) return;
   let t=null; const show=()=>el.classList.add('showbar'); const hide=()=>el.classList.remove('showbar');
   const kick=()=>{ show(); if(t) clearTimeout(t); t=setTimeout(hide, 900); };
   el.addEventListener('scroll', kick, {passive:true}); el.addEventListener('mouseenter', show); el.addEventListener('mouseleave', hide);
 }
-/* 전체 x-scroll 중 제외대상 빼고만 적용 */
 document.querySelectorAll('.x-scroll').forEach(el=>{ attachAutoScrollbarDesktop(el); });
 
 /* ===== 모바일: 고스트바 설치/갱신 ===== */
@@ -622,18 +618,15 @@ function installGhostbar(container){
   window.addEventListener('resize', update);
   requestAnimationFrame(update);
 }
-/* 특정 대상들 고스트바 설치 + 즉시 갱신 */
 function refreshGhostbarsForTargets(list){
   if (window.innerWidth >= 901) return;
   list.forEach(sel=>{
     const el = typeof sel==='string' ? document.querySelector(sel) : sel;
     if(!el) return;
     installGhostbar(el);
-    el.dispatchEvent(new Event('scroll'));
+    el.dispatchEvent(new Event('scroll')); // 즉시 표시
   });
 }
-
-/* 모바일: 모든 가로 스크롤 대상에 설치 */
 function setupMobileGhostbars(){
   if (window.innerWidth >= 901) return;
   const targets = [
@@ -653,7 +646,7 @@ window.addEventListener('resize', ()=>{ if (window.innerWidth < 901) setupMobile
 
 /* 초기 렌더 */
 applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-/* 초기 설치 후 한 번 더 강제 갱신(첫 진입에서 LG 등 잘림 방지) */
+/* 초기 설치 후 한 번 더 강제 갱신 */
 setupMobileGhostbars();
 
 /* 상담신청 버튼/폼 */
