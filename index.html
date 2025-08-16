@@ -40,7 +40,7 @@
     user-select:none; -webkit-user-select:none;
   }
   .nav-2025-subbar-inner span{
-    cursor:pointer; user-select:none; -webkit-user-select:none; -ms-user-select:none;
+    cursor:pointer; user-select:none; -webkit-user-select:none; -ms-overflow-style:none;
     padding:4px 6px;border-radius:6px;transition:background .12s,color .12s
   }
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
@@ -160,6 +160,32 @@
       transform:translateX(0);
     }
   }
+
+  /* ===== [모바일 전용] 가로 스크롤 끝단 잘림 방지 공통 패치 (추가) ===== */
+  @media (max-width: 900px) {
+    .x-scroll {
+      padding: 0 12px 12px 12px;         /* 끝단 + 하단 여백 */
+      scroll-padding-inline: 12px;       /* 중앙/끝 스크롤 시 여유 */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    .x-scroll::after {                   /* 마지막 요소 뒤 여백(가상) */
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 1px;
+    }
+    .x-scroll > .dm-btn {                /* 버튼 간격 살짝 */
+      margin-right: 6px;
+    }
+  }
+  /* 데스크탑 스크롤바 가독 약간 ↑ */
+  @media (min-width:901px){
+    .x-scroll.showbar::-webkit-scrollbar{ height: 8px; }
+    .x-scroll.showbar{ scrollbar-width: thin; }
+  }
+  /* 지원 브라우저에서 스크롤바 생겨도 레이아웃 안정 */
+  .x-scroll{ scrollbar-gutter: stable both-edges; }
 </style>
 </head>
 <body>
@@ -178,7 +204,7 @@
 <!-- 네비 + 인터넷 카테고리 -->
 <div class="nav-2025-wrap" id="navWrap">
   <div class="nav-2025-inner">
-    <ul class="nav-2025-main" id="topMainTabs">
+    <ul class="nav-2025-main x-scroll" id="topMainTabs">
       <li><button class="nav-2025-menu-btn" aria-label="전체메뉴"><i class="fa-solid fa-bars"></i></button></li>
       <li id="navInternet">인터넷</li>
       <li id="navRental">가전렌탈</li>
@@ -187,7 +213,7 @@
     </ul>
   </div>
   <div class="nav-2025-subbar-wrap" id="internetBar">
-    <div class="nav-2025-subbar-inner" id="internetCats">
+    <div class="nav-2025-subbar-inner x-scroll" id="internetCats">
       <span data-carrier="SK">SK</span>
       <span data-carrier="KT">KT</span>
       <span data-carrier="LG">LG</span>
@@ -201,7 +227,6 @@
 <!-- ▼ 상세 래퍼 -->
 <section id="internet-detail" class="custom-section" style="display:none;">
   <div class="section-inner">
-
     <!-- 상세 본문 -->
     <section id="internet-comp" class="dm-wrap" aria-label="인터넷 - 상세">
 
@@ -224,7 +249,7 @@
         <div id="dm-speed-options" class="x-scroll"></div>
       </div>
 
-      <!-- 옵션: TV / Wi‑Fi -->
+      <!-- 옵션: TV / Wi-Fi -->
       <div class="dm-row">
         <label><input id="dm-tv-toggle" class="dm-check" type="checkbox" checked>TV 포함</label>
         <label><input id="dm-wifi-toggle" class="dm-check" type="checkbox" checked>와이파이 포함</label>
@@ -478,6 +503,9 @@ function renderSpeedOptions(){
     box.appendChild(el); if(i===0) state.speed=sp;
   });
   refreshSpeedPriceLabels();
+
+  /* 모바일 끝단 패드 보강 */
+  ensureEndPadding(box);
 }
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
@@ -494,6 +522,9 @@ function renderTvPlans(){
   if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); return; }
   plans.forEach((p,i)=>{ const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name; el.innerHTML=`<b>${p.channels} 채널</b><small>${p.name} · 월 ${money(p.price)}원</small>`; box.appendChild(el); if(i===0) state.tv={id:p.id,name:p.name,price:p.price}; });
   updateTotal();
+
+  /* 모바일 끝단 패드 보강 */
+  ensureEndPadding(box);
 }
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
@@ -579,11 +610,30 @@ function installGhostbar(container){
   window.addEventListener('resize', update);
   requestAnimationFrame(update);
 }
+
+/* ★ 추가: 모바일 끝단 잘림 방지용 패드 주입 */
+function ensureEndPadding(container){
+  if (!container || window.innerWidth >= 901) return;     // 모바일에서만
+  if (container.querySelector(':scope > ._endpad')) return;
+  const pad = document.createElement('span');
+  pad.className = '_endpad';
+  pad.style.display = 'inline-block';
+  pad.style.width = '12px';   // 끝 여유
+  pad.style.height = '1px';
+  pad.style.pointerEvents = 'none';
+  container.appendChild(pad);
+}
+
+/* 모바일 고스트바/끝패드 일괄 설치 */
 function setupMobileGhostbars(){
   if (window.innerWidth >= 901) return;
-  installGhostbar(document.getElementById('topMainTabs'));
-  installGhostbar(document.getElementById('internetCats')); /* ← 카테고리 칩 고스트바 확실히 설치 */
-  document.querySelectorAll('.x-scroll').forEach(installGhostbar);
+  const targets = [
+    document.getElementById('topMainTabs'),
+    document.getElementById('internetCats'),
+    ...document.querySelectorAll('.x-scroll')
+  ];
+  targets.forEach(installGhostbar);
+  targets.forEach(ensureEndPadding);   // ★ 끝패드 자동 주입
 }
 setupMobileGhostbars();
 window.addEventListener('resize', ()=>{ if (window.innerWidth < 901) setupMobileGhostbars(); });
