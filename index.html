@@ -1,4 +1,4 @@
-테4
+테5
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,10 +8,12 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
+  /* ===== 전역 ===== */
   html,body{overflow-x:hidden}
   *,*::before,*::after{box-sizing:border-box}
-
   body{background:#f7f8fb;}
+
+  /* ===== 상단바/네비 ===== */
   .nav-auth-bar{width:100%;background:#f4f7fe;border-bottom:1px solid #e3eaf6}
   .nav-auth-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
   .nav-brand{display:flex;align-items:center;gap:10px;font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:800;letter-spacing:-.01em;color:#2563eb;font-size:22px;cursor:pointer}
@@ -30,38 +32,18 @@
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
   }
   .nav-2025-subbar-wrap.show{display:block;}
-
   .nav-2025-subbar-inner{
-    max-width:1280px;margin:0 auto;display:flex;gap:26px;align-items:center;justify-content:flex-start;
+    max-width:1280px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:flex-start;
     padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569;
     user-select:none; -webkit-user-select:none;
   }
   .nav-2025-subbar-inner span{
     cursor:pointer; user-select:none; -webkit-user-select:none;
-    padding:4px 6px;border-radius:6px;transition:background .12s,color .12s
+    padding:6px 10px;border-radius:8px;transition:background .12s,color .12s; border:1px solid #e5e9f5; background:#fff;
   }
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
 
-  /* === 모바일 전용 === */
-  @media(max-width:900px){
-    .nav-2025-inner{gap:16px;font-size:18px;padding:12px 10px 8px 8px}
-    .nav-2025-main{
-      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;
-      scrollbar-width:none; -ms-overflow-style:none; padding-bottom:6px; position:relative;
-      touch-action: pan-x; margin-left:0;margin-right:0;
-    }
-    .nav-2025-main::-webkit-scrollbar{display:none;height:0}
-
-    .nav-2025-subbar-inner{padding:4px 8px 12px 8px}
-    #internetCats{
-      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
-      gap:10px; scrollbar-width:none; -ms-overflow-style:none; position:relative; touch-action: pan-x;
-      margin-left:0;margin-right:0;
-    }
-    #internetCats::-webkit-scrollbar{display:none;height:0}
-    #internetCats span{scroll-snap-align:center}
-  }
-
+  /* ===== 고정 버튼 ===== */
   #consultOpenBtn{
     position:fixed;left:50%;transform:translateX(-50%);bottom:28px;z-index:51;
     background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;
@@ -71,7 +53,6 @@
   @media(max-width:900px){
     #consultOpenBtn{ font-size:.95rem;padding:.7rem 1.4rem;border-radius:1.6rem;bottom:22px; }
   }
-
   #scrollTopBtn{
     position:fixed;right:18px;bottom:28px;z-index:51;
     background:linear-gradient(90deg,#0ea5e9,#22d3ee); color:#fff; font-size:.98rem; font-weight:700;
@@ -84,6 +65,7 @@
     #scrollTopBtn .txt{display:none}
   }
 
+  /* ===== 하단 폼 ===== */
   #fixedFormWrapper{position:fixed;left:0;right:0;bottom:0;z-index:52;background:linear-gradient(90deg,#2563eb,#3b82f6);border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;transform:translateY(100%);opacity:0;pointer-events:none}
   #fixedFormWrapper.active{transform:translateY(0);opacity:1;pointer-events:auto}
   .consult-form-inner{background:#fff;border-radius:.8rem;box-shadow:0 4px 16px rgba(59,130,246,.1);padding:1.2rem .8rem;display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;max-width:680px;margin:1.1rem auto}
@@ -91,22 +73,27 @@
   .consult-form-inner button{min-width:90px;padding:.6rem 1.6rem;font-size:1rem;font-weight:700;background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;border-radius:.55rem;border:none}
   #consultCloseBtn{background:none;border:none;color:#2563eb;font-size:1.4rem;font-weight:700;position:absolute;right:16px;top:16px;cursor:pointer}
 
+  /* ===== 섹션 ===== */
   .custom-section{width:100%;background:#fff;display:flex;align-items:center;justify-content:center;padding:80px 0;min-height:520px}
   .section-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 2vw;display:flex;flex-direction:column;align-items:center}
 
+  /* ===== 푸터 ===== */
   .footer-basic{background:#f8f9fa;border-top:1px solid #ececec;margin-top:30px;padding:36px 0 92px 0}
   .footer-inner{max-width:950px;margin:0 auto;padding:0 16px}
   .footer-biz{font-size:14px;color:#222;line-height:1.7;text-align:left;word-break:keep-all}
   .footer-copy{text-align:right;color:#b3bfd2;font-size:13px;margin-top:14px}
 
+  /* ===== DM 컴포넌트 ===== */
   .dm-wrap{max-width:900px;margin:20px auto;font-family:system-ui,Segoe UI,Roboto,Apple SD Gothic Neo,Arial,sans-serif;color:#111}
   .dm-row{margin:18px 0}
   .dm-title{font-weight:800;margin-bottom:8px}
-  .dm-btn{display:inline-block;vertical-align:top;min-width:140px;padding:10px 14px;margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative}
+
+  .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:10px 14px;margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative; white-space:nowrap;}
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
   .dm-btn.active{border-color:#d60028;box-shadow:0 0 0 3px rgba(214,0,40,.12)}
   .badge-reco{position:absolute;right:8px;top:-8px;background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
+
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
   .dm-break{font-size:13px;color:#444;margin-top:6px}
@@ -121,71 +108,50 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  /* 공통 가로 스크롤 컨테이너 */
+  /* ===== 공용 가로 스크롤 컨테이너(네이티브 스크롤바) ===== */
+  :root{ --endpad: 28px; }
   .x-scroll{
-    overflow-x:auto;
-    overflow-y:visible;              /* Y축은 보이게: 배지/아이콘 클리핑 방지 */
-    white-space:nowrap;
-    -webkit-overflow-scrolling:touch;
-    position:relative;
+    overflow-x:auto; overflow-y:visible;
+    display:block; position:relative;
+    white-space:nowrap; -webkit-overflow-scrolling:touch;
+    padding-bottom:10px; scroll-padding-inline-end:var(--endpad);
+    scrollbar-gutter:stable both-edges;
   }
-  @media (min-width:901px){
-    .x-scroll{scrollbar-width:none; -ms-overflow-style:none;}
-    .x-scroll::-webkit-scrollbar{height:0}
-    .x-scroll.showbar{scrollbar-width:thin}
-    .x-scroll.showbar::-webkit-scrollbar{height:6px}
-    #topMainTabs::-webkit-scrollbar,
-    #internetCats::-webkit-scrollbar{height:0 !important}
+  /* 스크롤바: 데스크탑/모바일 공통 얇게 표시, 필요 없으면 자동 숨김(브라우저 기본 동작) */
+  .x-scroll::-webkit-scrollbar{height:8px}
+  .x-scroll::-webkit-scrollbar-track{background:transparent}
+  .x-scroll::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
+  .x-scroll:hover::-webkit-scrollbar-thumb{background:#a8b4cf}
+  @supports (scrollbar-color: auto) {
+    .x-scroll{scrollbar-color:#cfd6e6 transparent; scrollbar-width:thin;}
   }
-  @media (max-width:900px){
-    .x-scroll{touch-action: pan-x;}
-    .x-scroll::-webkit-scrollbar{display:none;height:0}
-  }
+  /* 배지 안 잘리게 상단 여유 */
+  .has-badges{ padding-top:14px; }
 
-  /* 배지가 있는 가로 리스트는 상단 여유 패딩을 줘서 잘림 방지 */
-  .has-badges{ padding-top:12px; }
+  /* 우측 여유 공간 패드(버튼 끝 절대 안 잘리게) */
+  .endpad{ display:inline-block; width:var(--endpad); height:1px; }
 
-  #dm-carriers{padding-bottom:20px;}
-  #dm-speeds{margin-top:36px;}
-  #dm-speed-options{ /* 속도 영역 */
-    overflow-x:auto;
-    overflow-y:visible;
-  }
+  /* 특정 리스트 여유 패딩 */
+  #dm-carriers{padding:0 6px 18px 6px;}
+  #dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll{padding-left:6px;}
 
-  /* 모바일 고스트바 */
-  @media (max-width:900px){
-    .ghostbar{
-      position:absolute; left:0; right:0; bottom:2px; height:3px; z-index:50;
-      border-radius:999px; background:rgba(148,163,184,.16);
-      overflow:hidden; opacity:0; transition:opacity .25s; pointer-events:none;
-    }
-    .ghostbar.show{ opacity:1; }
-    .ghostbar .thumb{
-      position:absolute; left:0; top:0; height:100%; width:20%;
-      border-radius:999px; background:rgba(37,99,235,.45);
-      transform:translateX(0);
-    }
-  }
+  /* 추천/버튼 절단 방지 */
+  #dm-speed-options,#dm-tv-options{overflow-y:visible}
 
-  /* 오른쪽 여유 패드: 실제 요소(endpad)를 사용 */
-  @media (max-width: 900px) {
-    :root { --endpad: 22px; }
-    .x-scroll{ padding: 0 0 14px 0; scroll-padding-inline-end: var(--endpad); overscroll-behavior-x: contain; }
-    .x-scroll::after{ content:""; display:inline-block; width:0; height:0; }
-    .endpad{ display:inline-block; width:var(--endpad); height:1px; }
-    .x-scroll > .dm-btn{ margin-right:8px; }
-    #dm-carriers{padding-left:8px}
-    #dm-carriers,#dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll,#internetCats,#topMainTabs{overflow-x:auto;}
-  }
-
-  #dm-total-scroll .total-line{display:inline-flex; align-items:baseline; gap:12px; min-width:max-content; white-space:nowrap;}
-  #dm-total-scroll{ margin-bottom:8px; }
-
-  @media (min-width:901px){
-    .x-scroll.showbar::-webkit-scrollbar{ height: 8px; }
-    .x-scroll.showbar{ scrollbar-width: thin; }
-  }
-  .x-scroll{ scrollbar-gutter: stable both-edges; }
+  /* ===== 최종 요금표 테이블 ===== */
+  .dm-final-wrap{margin-top:18px;border:1px solid #e5e9f5;border-radius:12px;background:#fff}
+  .dm-final-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eef2fb}
+  .dm-final-hd b{font-size:16px}
+  .dm-final-body{padding:8px 10px}
+  .dm-table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px}
+  .dm-table th,.dm-table td{font-size:13px;text-align:center;padding:10px 8px;white-space:nowrap;border-bottom:1px solid #f0f2f8}
+  .dm-table th{background:#f7f9ff;font-weight:800}
+  .dm-table tr:last-child td{border-bottom:none}
+  .dm-chip{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef3ff;color:#2b59ff;font-weight:700;font-size:12px}
+  .dm-tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#fff2f2;color:#d60028;font-weight:800;font-size:11px;margin-left:4px}
+  .dm-table-wrap{overflow-x:auto}
+  .dm-table-wrap::-webkit-scrollbar{height:8px}
+  .dm-table-wrap::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
 </style>
 </head>
 <body>
@@ -231,6 +197,7 @@
   <div class="section-inner">
 
     <section id="internet-comp" class="dm-wrap" aria-label="인터넷 - 상세">
+      <!-- 통신사 -->
       <div class="dm-row">
         <div class="dm-title">통신사</div>
         <div id="dm-carriers" class="x-scroll has-badges">
@@ -244,21 +211,25 @@
         </div>
       </div>
 
+      <!-- 속도 -->
       <div class="dm-row" id="dm-speeds">
         <div class="dm-title">인터넷 속도</div>
         <div id="dm-speed-options" class="x-scroll has-badges"><i class="endpad" aria-hidden="true"></i></div>
       </div>
 
+      <!-- 옵션 -->
       <div class="dm-row">
         <label><input id="dm-tv-toggle" class="dm-check" type="checkbox" checked>TV 포함</label>
         <label><input id="dm-wifi-toggle" class="dm-check" type="checkbox" checked>와이파이 포함</label>
       </div>
 
+      <!-- TV 요금제 -->
       <div class="dm-row" id="dm-tv-section">
         <div class="dm-title">TV 요금제</div>
         <div id="dm-tv-options" class="x-scroll has-badges"><i class="endpad" aria-hidden="true"></i></div>
       </div>
 
+      <!-- 할인 -->
       <div class="dm-row" id="dm-discounts">
         <div class="dm-title">결합 / 할인</div>
 
@@ -283,12 +254,11 @@
         </div>
       </div>
 
+      <!-- 합계/안내 -->
       <div class="dm-row dm-total">
         <div id="dm-total-scroll" class="x-scroll">
-          <div class="total-line">
-            <span id="dm-total">월 0원</span>
-            <span id="dm-breakdown" class="dm-break"></span>
-          </div>
+          <span id="dm-total">월 0원</span>
+          <span id="dm-breakdown" class="dm-break"></span>
           <i class="endpad" aria-hidden="true"></i>
         </div>
         <div class="dm-note" id="dm-notice">
@@ -300,10 +270,38 @@
           </ul>
         </div>
       </div>
+
+      <!-- ✅ 최종 요금표(요청사항) -->
+      <div class="dm-final-wrap" id="dm-final">
+        <div class="dm-final-hd">
+          <b>최종 요금표 <span id="dm-final-tag" class="dm-tag">선택 조합 기준</span></b>
+          <span class="dm-chip" id="dm-final-carrier">SK</span>
+        </div>
+        <div class="dm-final-body">
+          <div class="dm-table-wrap x-scroll">
+            <table class="dm-table" id="dm-final-table">
+              <thead>
+                <tr>
+                  <th>속도</th>
+                  <th>인터넷</th>
+                  <th>TV</th>
+                  <th>결합할인</th>
+                  <th>온가족</th>
+                  <th>합계(월)</th>
+                </tr>
+              </thead>
+              <tbody><!-- JS 렌더 --></tbody>
+            </table>
+            <i class="endpad" aria-hidden="true"></i>
+          </div>
+          <div class="dm-help" id="dm-final-help">* 현재 선택(와이파이/TV/결합/온가족) 기준으로 각 속도의 최종 월요금을 보여줍니다.</div>
+        </div>
+      </div>
     </section>
   </div>
 </section>
 
+<!-- 더미 섹션 -->
 <section id="sec1" class="custom-section"><div class="section-inner">여기에 1번째 상세페이지 내용</div></section>
 <section id="sec2" class="custom-section"><div class="section-inner">여기에 2번째 상세페이지 내용</div></section>
 <section id="sec3" class="custom-section"><div class="section-inner">여기에 3번째 상세페이지 내용</div></section>
@@ -315,6 +313,7 @@
 <button id="consultOpenBtn" aria-label="상담신청 열기">상담신청</button>
 <button id="scrollTopBtn" aria-label="맨위로"><i class="fa-solid fa-arrow-up"></i><span class="txt">맨위로</span></button>
 
+<!-- 상담 폼 -->
 <div id="fixedFormWrapper" aria-label="상담신청 폼">
   <button id="consultCloseBtn" aria-label="상담신청 닫기">&times;</button>
   <form id="consultForm" class="consult-form-inner" aria-describedby="privacyHelp">
@@ -338,7 +337,6 @@
       <button type="submit">신청</button>
     </div>
     <div id="privacyHelp" class="text-xs text-gray-500 w-full mt-1">상담 진행을 위해 최소한의 개인정보가 수집·이용되며, 목적 달성 후 지체 없이 파기됩니다.</div>
-
     <div id="privacyAccordion" class="privacy-panel" role="region" aria-label="개인정보 처리 안내">
       <div class="privacy-panel-inner">
         <p><strong>개인정보 처리 안내(상세)</strong></p>
@@ -347,18 +345,11 @@
           <li><b>수집방법</b>: 온라인 신청서, 유선상담(상담원이 수기 입력)</li>
           <li><b>이용목적</b>: 가입상담, 설치 일정 조율, 요금제/사은품 안내, 본인확인 및 계약 체결·이행</li>
           <li><b>보유·이용기간</b>: 목적 달성 후 지체 없이 파기. 단, 분쟁 예방 및 처리 목적의 최소 정보는 <u>3년</u> 보관 후 파기</li>
-          <li><b>파기방법</b>: 전자파일은 완전삭제, 출력물은 분쇄 또는 소각</li>
-          <li><b>처리위탁</b>: 상담/접수 시스템 운영 및 저장(Airtable·국내 대행 서버), 알림/연락 발송. 위탁사는 계약으로 기술·관리적 보호조치 이행</li>
-          <li><b>제3자 제공</b>: 선택한 통신사(SK/KT/LG/스카이라이프/헬로비전 등) 및 설치 대행점에 한해 <i>가입/설치 진행 목적</i>으로만 제공</li>
-          <li><b>해외 이전</b>: 해외 서버 사용 시 계약 및 암호화 등 보호조치 후 처리, 세부 내용은 요청 시 고지</li>
-          <li><b>동의 거부 권리</b>: 동의 거부 가능하나, 거부 시 상담 및 가입 진행이 제한될 수 있음</li>
-          <li><b>정보주체 권리</b>: 열람·정정·삭제·처리정지 요구 및 민원 제기 가능(연락처: 대표번호 1661-9182)</li>
-          <li><b>마케팅 수신동의(선택)</b>: 이벤트/프로모션 정보 제공에 한해 별도 동의 시에만 이용</li>
-          <li><b>보안조치</b>: 전송·저장 암호화, 접근권한 최소화, 접속기록 보관 및 주기적 점검</li>
+          <li><b>처리위탁</b>: 상담/접수 시스템 운영 및 저장(Airtable·국내 대행 서버), 알림/연락 발송.</li>
+          <li><b>제3자 제공</b>: 선택 통신사 및 설치 대행점에 한함</li>
         </ul>
       </div>
     </div>
-
     <div class="flex items-center gap-2 text-sm text-gray-600 w-full">
       <input id="mktAgree" type="checkbox"><label for="mktAgree">혜택/프로모션 안내 수신 동의(선택)</label>
     </div>
@@ -377,32 +368,46 @@
 </footer>
 
 <script>
-/* 모바일 판별 */
+/* ===== 유틸 ===== */
 const isMobile = ()=> window.matchMedia('(max-width: 900px)').matches;
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+const money = n => (n||0).toLocaleString('ko-KR');
 
-/* 펼침바 */
-const navInternet = document.getElementById('navInternet');
-const internetBar = document.getElementById('internetBar');
-const internetCats = document.getElementById('internetCats');
+/* ===== 메뉴/서브 ===== */
+const navInternet = $('#navInternet');
+const internetBar = $('#internetBar');
+const internetCats = $('#internetCats');
 let hoverTimer = null;
-const OPEN_DELAY = 0, CLOSE_DELAY = 450;
-
+const CLOSE_DELAY = 450;
 function showBarNow(){ clearTimeout(hoverTimer); internetBar.classList.add('show'); }
 function hideBarLater(){ clearTimeout(hoverTimer); hoverTimer=setTimeout(()=>internetBar.classList.remove('show'), CLOSE_DELAY); }
 
-navInternet.addEventListener('pointerenter', ()=> { if (!isMobile()){ if (OPEN_DELAY) setTimeout(showBarNow, OPEN_DELAY); else showBarNow(); }});
-navInternet.addEventListener('pointerleave', ()=> { if (!isMobile()) hideBarLater(); });
-internetBar.addEventListener('pointerenter', ()=> { if (!isMobile()) showBarNow(); });
-internetBar.addEventListener('pointerleave', ()=> { if (!isMobile()) hideBarLater(); });
+navInternet.addEventListener('pointerenter', ()=>{ if (!isMobile()) showBarNow(); });
+navInternet.addEventListener('pointerleave', ()=>{ if (!isMobile()) hideBarLater(); });
+internetBar.addEventListener('pointerenter', ()=>{ if (!isMobile()) showBarNow(); });
+internetBar.addEventListener('pointerleave', ()=>{ if (!isMobile()) hideBarLater(); });
 
-/* endpad 생성 */
+navInternet.addEventListener('click', (e)=>{
+  if (isMobile()){
+    e.stopPropagation();
+    const willOpen = !internetBar.classList.contains('show');
+    internetBar.classList.toggle('show');
+    if (willOpen){ requestAnimationFrame(()=>{ ensureEndpad(internetCats); ensureEndpad($('#topMainTabs')); scrollCatsToSelected(); }); }
+  } else showBarNow();
+});
+window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); });
+document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.target)&&!navInternet.contains(e.target); if (out) internetBar.classList.remove('show'); });
+
+/* 우측 여유패드 보장 */
 function ensureEndpad(el){
   if(!el) return;
-  if(el.querySelector(':scope > .endpad')) return;
-  const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad);
+  if(!el.querySelector(':scope > .endpad')){
+    const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad);
+  }
 }
 
-/* 모바일: 서브칩 중앙정렬 */
+/* 모바일 카테칩 중앙정렬 */
 function scrollCatsToSelected(){
   if (!isMobile()) return;
   const chip = Array.from(internetCats.querySelectorAll('span')).find(s=>s.dataset.carrier===state.carrier);
@@ -412,19 +417,12 @@ function scrollCatsToSelected(){
   const targetCenter = chip.offsetLeft + chipRect.width/2;
   internetCats.scrollTo({left: targetCenter - wrapRect.width/2, behavior: 'smooth'});
 }
-navInternet.addEventListener('click', (e)=>{
-  if (isMobile()){
-    e.stopPropagation();
-    const willOpen = !internetBar.classList.contains('show');
-    internetBar.classList.toggle('show');
-    if (willOpen){ requestAnimationFrame(()=>{ ensureEndpad(internetCats); ensureEndpad(document.querySelector('#topMainTabs')); scrollCatsToSelected(); }); }
-  } else showBarNow();
-});
-window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); });
-document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.target)&&!navInternet.contains(e.target); if (out) internetBar.classList.remove('show'); });
 
-/* 데이터/요금표 */
-const SPEED_OPTIONS = { SK:["100","500","1000"], KT:["100","500","1000"], LG:["100","500","1000"], "스카이라이프":["100","200","500","1000"], "헬로비전":["100","160","500","1000"], SKPOP:["100","500","1000"] };
+/* ===== 데이터/요금표 ===== */
+const SPEED_OPTIONS = {
+  SK:["100","500","1000"], KT:["100","500","1000"], LG:["100","500","1000"],
+  "스카이라이프":["100","200","500","1000"], "헬로비전":["100","160","500","1000"], SKPOP:["100","500","1000"]
+};
 const TV_PLANS = {
   SK:[{id:"sk-184-basic",name:"Btv 이코노미",channels:184,price:14300},{id:"sk-226-standard",name:"Btv 스탠다드",channels:226,price:17600},{id:"sk-252-all",name:"Btv ALL",channels:252,price:20900},{id:"sk-222-standard-plus",name:"Btv 스탠다드 플러스",channels:222,price:25300},{id:"sk-252-all-plus",name:"Btv ALL 플러스",channels:252,price:26400},{id:"sk-252-std-nf-prem",name:"Btv 스탠다드 넷플릭스 프리미엄",channels:252,price:32900},{id:"sk-252-all-nf-prem",name:"Btv ALL 넷플릭스 프리미엄",channels:252,price:35400}],
   KT:[{id:"kt-basic",name:"올레tv 베이직",channels:236,price:16500},{id:"kt-light",name:"올레tv 라이트",channels:240,price:17600},{id:"kt-ess",name:"올레tv 에센스",channels:263,price:20900}],
@@ -442,75 +440,11 @@ const INTERNET_MATRIX = {
   SKPOP:{wifiOff:{"100":19800,"500":27500,"1000":33000}, wifiOn:{"100":22000,"500":28600,"1000":34100}}
 };
 const SK_FAMILY = {"30":{"100":-6600,"500":-9900,"1000":-11550},"50":{"100":-11000,"500":-16500,"1000":-19250}};
-const $ = s=>document.querySelector(s);
-const $$ = s=>document.querySelectorAll(s);
-const money = n => (n||0).toLocaleString('ko-KR');
 
 /* 상태 */
 const state = { carrier:'SK', speed:null, tvIncluded:true, wifiIncluded:true, tv:null, mobileDiscount:0, familySelection:'none' };
 
-/* ===== 고스트바 매니저(이벤트 의존 X, RAF 감지) ===== */
-const ghostTargets = new Set();           // 요소 집합
-const ghostState = new Map();             // {left, lastShown}
-function prepareScroller(el){
-  if(!el) return;
-  // 메뉴/서브는 패드만 유지 (고스트바 없음)
-  if(el.id==='topMainTabs' || el.id==='internetCats'){ ensureEndpad(el); return; }
-
-  ensureEndpad(el);
-
-  // 고스트바 없으면 생성
-  if(!el.querySelector(':scope > .ghostbar')){
-    const track=document.createElement('div'); track.className='ghostbar';
-    const thumb=document.createElement('div'); thumb.className='thumb';
-    track.appendChild(thumb); el.appendChild(track);
-    if(getComputedStyle(el).position==='static'){ el.style.position='relative'; }
-  }
-  // 상태 초기화
-  ghostTargets.add(el);
-  ghostState.set(el, { left: el.scrollLeft, lastShown: 0 });
-  // 즉시 1회 업데이트
-  updateGhostbar(el, /*showOnce*/true);
-}
-function updateGhostbar(el, showOnce=false){
-  const track = el.querySelector(':scope > .ghostbar'); if(!track) return;
-  const cw = el.clientWidth, sw = el.scrollWidth;
-  if(sw <= cw){ track.style.display='none'; return; } else { track.style.display=''; }
-
-  const trackW = el.clientWidth;
-  const ratio  = Math.max(cw/sw, .12);
-  const thumbW = Math.max(trackW*ratio, 18);
-  const maxScroll= sw - cw;
-  const avail = trackW - thumbW;
-  const x = (maxScroll>0) ? (el.scrollLeft/maxScroll)*avail : 0;
-  const thumb = track.querySelector('.thumb');
-  thumb.style.width = thumbW+'px';
-  thumb.style.transform = `translateX(${x}px)`;
-  if(showOnce){ track.classList.add('show'); setTimeout(()=>track.classList.remove('show'), 900); }
-}
-function tick(){
-  const now = performance.now();
-  ghostTargets.forEach(el=>{
-    const st = ghostState.get(el) || {left:0,lastShown:0};
-    if(el.scrollLeft !== st.left){
-      st.left = el.scrollLeft;
-      updateGhostbar(el);
-      const track = el.querySelector(':scope > .ghostbar');
-      if(track){ track.classList.add('show'); st.lastShown = now; }
-      ghostState.set(el, st);
-    }else{
-      // 일정 시간 지나면 숨김
-      const track = el.querySelector(':scope > .ghostbar');
-      if(track && track.classList.contains('show') && (now - st.lastShown > 900)){
-        track.classList.remove('show');
-      }
-    }
-  });
-  requestAnimationFrame(tick);
-}
-requestAnimationFrame(tick);
-
-/* 렌더/로직 */
+/* ===== 렌더/로직 ===== */
 function setActive(groupSel, btn){ $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
 function applyCarrierRules(){
   const wifi=$('#dm-wifi-toggle'), tv=$('#dm-tv-toggle'), famWrap=$('#dm-family-wrap');
@@ -539,7 +473,6 @@ function renderSpeedOptions(){
     box.appendChild(el); if(i===0) state.speed=sp;
   });
   ensureEndpad(box);
-  prepareScroller(box); // ★ 고스트바 준비
   refreshSpeedPriceLabels();
 }
 function refreshSpeedPriceLabels(){
@@ -551,14 +484,14 @@ function refreshSpeedPriceLabels(){
 }
 function renderTvPlans(){
   const section=$('#dm-tv-section'), box=$('#dm-tv-options'); box.innerHTML='';
-  if(!state.tvIncluded){ section.style.display='none'; state.tv=null; updateTotal(); return; }
+  if(!state.tvIncluded){ section.style.display='none'; state.tv=null; updateTotal(); renderFinalTable(); return; }
   section.style.display='';
   const plans=Array.isArray(TV_PLANS[state.carrier])?TV_PLANS[state.carrier]:[];
-  if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); return; }
+  if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); renderFinalTable(); return; }
   plans.forEach((p,i)=>{ const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name; el.innerHTML=`<b>${p.channels} 채널</b><small>${p.name} · 월 ${money(p.price)}원</small>`; box.appendChild(el); if(i===0) state.tv={id:p.id,name:p.name,price:p.price}; });
   ensureEndpad(box);
-  prepareScroller(box); // ★ 고스트바 준비
   updateTotal();
+  renderFinalTable();
 }
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
@@ -566,26 +499,50 @@ function updateTotal(){
   if(state.tvIncluded&&state.tv){ total+=state.tv.price; parts.push(`TV(${state.tv.name}) ${money(state.tv.price)}원`); }
   if(state.mobileDiscount){ total+=state.mobileDiscount; parts.push(`결합할인 ${money(state.mobileDiscount)}원`); }
   const fam=getFamilyDiscount(); if(fam){ total+=fam; parts.push(`온가족할인 ${money(fam)}원`); }
-  document.getElementById('dm-total').textContent=`월 ${money(total)}원`;
-  document.getElementById('dm-breakdown').textContent=parts.join(' · ');
-  prepareScroller(document.getElementById('dm-total-scroll')); // ★
+  $('#dm-total').textContent=`월 ${money(total)}원`;
+  $('#dm-breakdown').textContent=parts.join(' · ');
 }
 
-/* 이벤트 */
+/* ✅ 최종 요금표 렌더 */
+function renderFinalTable(){
+  const tbody = $('#dm-final-table tbody'); tbody.innerHTML='';
+  $('#dm-final-carrier').textContent = state.carrier;
+  const speeds = SPEED_OPTIONS[state.carrier]||[];
+  speeds.forEach(sp=>{
+    // 인터넷가 계산을 위해 임시로 speed 교체
+    const prev = state.speed; state.speed = sp;
+    const internet = getInternetPrice();
+    const tvPrice = (state.tvIncluded && state.tv) ? state.tv.price : 0;
+    const mobile = state.mobileDiscount||0;
+    const fam = (state.carrier==='SK') ? ( (state.familySelection==='none')?0:(SK_FAMILY[state.familySelection]?.[sp]||0) ) : 0;
+    const total = internet + tvPrice + mobile + fam;
+
+    const tr=document.createElement('tr');
+    const label = (sp==='1000') ? '1G' : sp+'M';
+    tr.innerHTML = `
+      <td><b>${label}</b>${sp==='500'?'<span class="dm-tag">추천</span>':''}</td>
+      <td>${internet?money(internet)+'원':'-'}</td>
+      <td>${tvPrice?money(tvPrice)+'원':'-'}</td>
+      <td>${mobile?money(mobile)+'원':'-'}</td>
+      <td>${fam?money(fam)+'원':'-'}</td>
+      <td><b>${money(total)}원</b></td>
+    `;
+    tbody.appendChild(tr);
+    state.speed = prev;
+  });
+}
+
+/* ===== 이벤트 ===== */
 document.getElementById('dm-carriers').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.carrier=btn.dataset.carrier; setActive('#dm-carriers', btn);
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-
-  ['#dm-carriers','#dm-bundle-mobile','#dm-family'].forEach(sel=>{
-    ensureEndpad(document.querySelector(sel));
-    prepareScroller(document.querySelector(sel));
-  });
+  ensureEndpad($('#dm-carriers')); ensureEndpad($('#dm-bundle-mobile')); ensureEndpad($('#dm-family'));
   if (isMobile()) internetBar.classList.remove('show');
 });
 document.getElementById('dm-speeds').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.speed) return;
-  state.speed=btn.dataset.speed; setActive('#dm-speeds #dm-speed-options', btn); updateTotal();
+  state.speed=btn.dataset.speed; setActive('#dm-speeds #dm-speed-options', btn); updateTotal(); renderFinalTable();
 });
 document.getElementById('dm-tv-toggle').addEventListener('change', e=>{
   state.tvIncluded=e.target.checked; if(state.carrier==='SKPOP'){ state.tvIncluded=true; e.target.checked=true; }
@@ -593,39 +550,28 @@ document.getElementById('dm-tv-toggle').addEventListener('change', e=>{
 });
 document.getElementById('dm-wifi-toggle').addEventListener('change', e=>{
   state.wifiIncluded=e.target.checked; if(state.carrier==='LG'||state.carrier==='헬로비전'){ state.wifiIncluded=true; e.target.checked=true; }
-  refreshSpeedPriceLabels(); updateTotal();
+  refreshSpeedPriceLabels(); updateTotal(); renderFinalTable();
 });
 document.getElementById('dm-tv-section').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.tv) return;
-  state.tv={id:btn.dataset.tv,name:btn.dataset.name,price:parseInt(btn.dataset.price,10)}; setActive('#dm-tv-section', btn); updateTotal();
+  state.tv={id:btn.dataset.tv,name:btn.dataset.name,price:parseInt(btn.dataset.price,10)}; setActive('#dm-tv-section', btn); updateTotal(); renderFinalTable();
 });
 document.getElementById('dm-bundle-mobile').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
-  state.mobileDiscount=parseInt(btn.dataset.mobile,10)||0; setActive('#dm-bundle-mobile', btn); updateTotal();
+  state.mobileDiscount=parseInt(btn.dataset.mobile,10)||0; setActive('#dm-bundle-mobile', btn); updateTotal(); renderFinalTable();
 });
 document.getElementById('dm-family').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
-  state.familySelection=btn.dataset.family||'none'; setActive('#dm-family', btn); updateTotal();
+  state.familySelection=btn.dataset.family||'none'; setActive('#dm-family', btn); updateTotal(); renderFinalTable();
 });
 
-/* 카테고리 → 상세 연동 */
+/* 카테고리 → 상세 */
 function selectCategory(catCarrier){
   window.toggleInternetDetail(true);
   const targetBtn=Array.from(document.querySelectorAll('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier===catCarrier);
   if(targetBtn){ targetBtn.click(); }
 }
 document.querySelectorAll('#internetCats span').forEach(chip=> chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier)));
-
-/* 데스크탑: 자동 스크롤바(특정 영역 제외) */
-const DESKTOP_NO_SCROLLBAR_IDS = new Set(['topMainTabs','internetCats']);
-function attachAutoScrollbarDesktop(el){
-  if(!el) return; if (isMobile()) return;
-  if (DESKTOP_NO_SCROLLBAR_IDS.has(el.id)) return;
-  let t=null; const show=()=>el.classList.add('showbar'); const hide=()=>el.classList.remove('showbar');
-  const kick=()=>{ show(); if(t) clearTimeout(t); t=setTimeout(hide, 900); };
-  el.addEventListener('scroll', kick, {passive:true}); el.addEventListener('mouseenter', show); el.addEventListener('mouseleave', hide);
-}
-document.querySelectorAll('.x-scroll').forEach(el=> attachAutoScrollbarDesktop(el));
 
 /* 상세 표시 토글 */
 window.toggleInternetDetail = function(show){
@@ -635,19 +581,14 @@ window.toggleInternetDetail = function(show){
   homeSections.forEach(s => s.style.display = show ? 'none' : 'flex');
   if(show){
     detail.scrollIntoView({behavior:'smooth', block:'start'});
-    if (isMobile()) {
-      ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']
-        .forEach(sel=> prepareScroller(document.querySelector(sel)));
-    }
   }
 };
 
 /* 초기 렌더 */
 function boot(){
-  applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-  // 최초 대상 모두 준비
-  ['#topMainTabs','#internetCats','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']
-    .forEach(sel=> prepareScroller(document.querySelector(sel)));
+  applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal(); renderFinalTable();
+  ['#topMainTabs','#internetCats','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll','#dm-final .dm-table-wrap']
+    .forEach(sel=> ensureEndpad(document.querySelector(sel)));
 }
 boot();
 window.addEventListener('resize', ()=>{ if (isMobile()) boot(); });
@@ -667,6 +608,7 @@ if(accToggle && accPanel){
   accToggle.addEventListener('click', toggle);
 }
 
+/* 폼 제출 */
 document.getElementById('consultForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const data={ name:$('#name').value.trim(), phone:$('#phone').value.trim(), category:$('#category').value,
