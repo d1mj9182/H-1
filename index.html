@@ -1,4 +1,4 @@
-테5
+테6
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +13,7 @@
   *,*::before,*::after{box-sizing:border-box}
   body{background:#f7f8fb;}
 
-  /* ===== 상단바/네비 ===== */
+  /* ===== 상단바/네비 (메뉴 레이아웃 고정) ===== */
   .nav-auth-bar{width:100%;background:#f4f7fe;border-bottom:1px solid #e3eaf6}
   .nav-auth-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
   .nav-brand{display:flex;align-items:center;gap:10px;font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:800;letter-spacing:-.01em;color:#2563eb;font-size:22px;cursor:pointer}
@@ -22,8 +22,8 @@
 
   .nav-2025-wrap{background:#fff;border-bottom:1.2px solid #ececec;position:relative;z-index:80}
   .nav-2025-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:36px;padding:16px 24px 8px 24px;font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:600;font-size:20px}
-  .nav-2025-main{display:flex;gap:26px;align-items:center;list-style:none;margin:0;padding:0;justify-content:flex-start}
-  .nav-2025-main li{cursor:pointer;user-select:none}
+  .nav-2025-main{display:flex !important;flex-wrap:nowrap;gap:26px;align-items:center;list-style:none;margin:0;padding:0;justify-content:flex-start;white-space:nowrap;overflow-x:auto}
+  .nav-2025-main li{display:inline-flex;align-items:center;cursor:pointer;user-select:none}
   .nav-2025-menu-btn{font-size:24px;color:#8ea5d3;background:none;border:none;cursor:pointer;padding:2px 6px}
 
   .nav-2025-subbar-wrap{
@@ -35,11 +35,11 @@
   .nav-2025-subbar-inner{
     max-width:1280px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:flex-start;
     padding:4px 24px 12px 24px;font-size:16px;font-weight:600;color:#475569;
-    user-select:none; -webkit-user-select:none;
+    user-select:none; -webkit-user-select:none; white-space:nowrap; overflow-x:auto;
   }
   .nav-2025-subbar-inner span{
     cursor:pointer; user-select:none; -webkit-user-select:none;
-    padding:6px 10px;border-radius:8px;transition:background .12s,color .12s; border:1px solid #e5e9f5; background:#fff;
+    padding:6px 10px;border-radius:8px;transition:background .12s,color .12s; border:1px solid #e5e9f5; background:#fff; display:inline-block;
   }
   .nav-2025-subbar-inner span:hover{background:#eaf2ff;color:#2563eb}
 
@@ -88,7 +88,7 @@
   .dm-row{margin:18px 0}
   .dm-title{font-weight:800;margin-bottom:8px}
 
-  .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:10px 14px;margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative; white-space:nowrap;}
+  .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:10px 14px;margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative;white-space:nowrap}
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
   .dm-btn.active{border-color:#d60028;box-shadow:0 0 0 3px rgba(214,0,40,.12)}
@@ -108,32 +108,35 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  /* ===== 공용 가로 스크롤 컨테이너(네이티브 스크롤바) ===== */
+  /* ===== 공용 가로 스크롤 컨테이너 ===== */
   :root{ --endpad: 28px; }
   .x-scroll{
-    overflow-x:auto; overflow-y:visible;
-    display:block; position:relative;
+    overflow-x:auto; overflow-y:visible; position:relative;
     white-space:nowrap; -webkit-overflow-scrolling:touch;
     padding-bottom:10px; scroll-padding-inline-end:var(--endpad);
     scrollbar-gutter:stable both-edges;
   }
-  /* 스크롤바: 데스크탑/모바일 공통 얇게 표시, 필요 없으면 자동 숨김(브라우저 기본 동작) */
+  /* 데스크탑: 얇은 기본 스크롤바 노출 */
   .x-scroll::-webkit-scrollbar{height:8px}
   .x-scroll::-webkit-scrollbar-track{background:transparent}
   .x-scroll::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
   .x-scroll:hover::-webkit-scrollbar-thumb{background:#a8b4cf}
-  @supports (scrollbar-color: auto) {
-    .x-scroll{scrollbar-color:#cfd6e6 transparent; scrollbar-width:thin;}
+  @supports (scrollbar-color:auto){
+    .x-scroll{scrollbar-color:#cfd6e6 transparent;scrollbar-width:thin}
   }
-  /* 배지 안 잘리게 상단 여유 */
-  .has-badges{ padding-top:14px; }
+  /* 모바일: 스크롤 가능하되 바 숨김 */
+  @media (max-width:900px){
+    .x-scroll{scrollbar-width:none;-ms-overflow-style:none}
+    .x-scroll::-webkit-scrollbar{display:none;height:0}
+  }
 
-  /* 우측 여유 공간 패드(버튼 끝 절대 안 잘리게) */
-  .endpad{ display:inline-block; width:var(--endpad); height:1px; }
+  /* 배지 안 잘리게 상단 여유 + 끝 패드 */
+  .has-badges{padding-top:14px}
+  .endpad{display:inline-block;width:var(--endpad);height:1px}
 
-  /* 특정 리스트 여유 패딩 */
-  #dm-carriers{padding:0 6px 18px 6px;}
-  #dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll{padding-left:6px;}
+  /* 리스트 여유 패딩 */
+  #dm-carriers{padding:0 6px 18px 6px}
+  #dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll{padding-left:6px}
 
   /* 추천/버튼 절단 방지 */
   #dm-speed-options,#dm-tv-options{overflow-y:visible}
@@ -180,7 +183,7 @@
     </ul>
   </div>
   <div class="nav-2025-subbar-wrap" id="internetBar">
-    <div class="nav-2025-subbar-inner x-scroll" id="internetCats">
+    <div class="nav-2025-subbar-inner" id="internetCats">
       <span data-carrier="SK">SK</span>
       <span data-carrier="KT">KT</span>
       <span data-carrier="LG">LG</span>
@@ -271,7 +274,7 @@
         </div>
       </div>
 
-      <!-- ✅ 최종 요금표(요청사항) -->
+      <!-- ✅ 최종 요금표 -->
       <div class="dm-final-wrap" id="dm-final">
         <div class="dm-final-hd">
           <b>최종 요금표 <span id="dm-final-tag" class="dm-tag">선택 조합 기준</span></b>
@@ -290,7 +293,7 @@
                   <th>합계(월)</th>
                 </tr>
               </thead>
-              <tbody><!-- JS 렌더 --></tbody>
+              <tbody></tbody>
             </table>
             <i class="endpad" aria-hidden="true"></i>
           </div>
@@ -509,7 +512,6 @@ function renderFinalTable(){
   $('#dm-final-carrier').textContent = state.carrier;
   const speeds = SPEED_OPTIONS[state.carrier]||[];
   speeds.forEach(sp=>{
-    // 인터넷가 계산을 위해 임시로 speed 교체
     const prev = state.speed; state.speed = sp;
     const internet = getInternetPrice();
     const tvPrice = (state.tvIncluded && state.tv) ? state.tv.price : 0;
