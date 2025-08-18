@@ -1,4 +1,4 @@
-테스트2
+테3
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -106,7 +106,7 @@
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
   .dm-btn.active{border-color:#d60028;box-shadow:0 0 0 3px rgba(214,0,40,.12)}
-  .badge-reco{position:absolute;right:8px;top:-8px;background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px}
+  .badge-reco{position:absolute;right:8px;top:-8px;background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
   .dm-break{font-size:13px;color:#444;margin-top:6px}
@@ -121,7 +121,13 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  .x-scroll{overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+  /* 공통 가로 스크롤 컨테이너 */
+  .x-scroll{
+    overflow-x:auto;
+    overflow-y:visible !important;  /* ★ 세로 숨김 방지 (배지/아이콘/고스트바 클리핑 해결) */
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
+  }
   @media (min-width:901px){
     .x-scroll{scrollbar-width:none; -ms-overflow-style:none;}
     .x-scroll::-webkit-scrollbar{height:0}
@@ -131,19 +137,19 @@
     #internetCats::-webkit-scrollbar{height:0 !important}
   }
   @media (max-width:900px){
-    .x-scroll{scrollbar-width:none; -ms-overflow-style:none; position:relative; touch-action: pan-x;}
+    .x-scroll{position:relative; touch-action: pan-x;}
     .x-scroll::-webkit-scrollbar{display:none;height:0}
   }
 
   #dm-carriers{padding-bottom:20px;}
   #dm-speeds{margin-top:36px;}
-  /* ★ 핵심: 가로 스크롤 강제 유지 */
-  #dm-speed-options{padding-top:12px; overflow-x:auto; overflow-y:visible;}
+  /* 속도 영역은 세로도 확실히 표시 */
+  #dm-speed-options{padding-top:12px; overflow-x:auto; overflow-y:visible !important;}
 
   /* 모바일 고스트바(컨텐츠 섹션에서만 표시) */
   @media (max-width:900px){
     .ghostbar{
-      position:absolute; left:0; right:0; bottom:2px; height:3px; z-index:2;
+      position:absolute; left:0; right:0; bottom:2px; height:3px; z-index:50; /* ★ z-index 상승 */
       border-radius:999px; background:rgba(148,163,184,.15);
       overflow:hidden; opacity:0; transition:opacity .25s; pointer-events:none;
     }
@@ -158,11 +164,12 @@
   /* 오른쪽 여유 패드: 실제 요소(endpad)를 사용 */
   @media (max-width: 900px) {
     :root { --endpad: 22px; }
-    .x-scroll{ padding: 0 0 14px 0 !important; scroll-padding-inline-end: var(--endpad); -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+    .x-scroll{ padding: 0 0 14px 0 !important; scroll-padding-inline-end: var(--endpad); overscroll-behavior-x: contain; }
     .x-scroll::after{ content:""; display:inline-block; width:0 !important; height:0 !important; }
     .endpad{ display:inline-block; width:var(--endpad); height:1px; }
     .x-scroll > .dm-btn{ margin-right:8px; }
     #dm-carriers{padding-left:8px}
+    /* 강제 오버플로우 */
     #dm-carriers,#dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll,#internetCats,#topMainTabs{overflow-x:auto !important;}
   }
 
@@ -614,7 +621,6 @@ function installGhostbar(container){
     track.querySelector('.thumb').style.transform=`translateX(${x}px)`;
   }
 
-  /* ★ 수정 포인트: 이벤트마다 update + show 호출 */
   const onScroll = ()=>{ update(); show(); };
   const onTouch  = ()=>{ update(); show(); };
 
@@ -623,7 +629,6 @@ function installGhostbar(container){
   container.addEventListener('touchend', onTouch, {passive:true});
   window.addEventListener('resize', update);
 
-  // 초기 1회 갱신 + 잠깐 표시
   requestAnimationFrame(()=>{ update(); show(); });
 }
 function refreshGhostbarsForTargets(list){
@@ -632,7 +637,7 @@ function refreshGhostbarsForTargets(list){
     const el = typeof sel==='string' ? document.querySelector(sel) : sel;
     if(!el) return;
     installGhostbar(el);
-    el.dispatchEvent(new Event('scroll')); // 트리거
+    el.dispatchEvent(new Event('scroll'));
   });
 }
 function setupMobileGhostbars(){
