@@ -1,4 +1,4 @@
-테3
+테4
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -124,9 +124,10 @@
   /* 공통 가로 스크롤 컨테이너 */
   .x-scroll{
     overflow-x:auto;
-    overflow-y:visible !important;  /* ★ 세로 숨김 방지 (배지/아이콘/고스트바 클리핑 해결) */
+    overflow-y:visible;              /* Y축은 보이게: 배지/아이콘 클리핑 방지 */
     white-space:nowrap;
     -webkit-overflow-scrolling:touch;
+    position:relative;
   }
   @media (min-width:901px){
     .x-scroll{scrollbar-width:none; -ms-overflow-style:none;}
@@ -137,20 +138,25 @@
     #internetCats::-webkit-scrollbar{height:0 !important}
   }
   @media (max-width:900px){
-    .x-scroll{position:relative; touch-action: pan-x;}
+    .x-scroll{touch-action: pan-x;}
     .x-scroll::-webkit-scrollbar{display:none;height:0}
   }
 
+  /* 배지가 있는 가로 리스트는 상단 여유 패딩을 줘서 잘림 방지 */
+  .has-badges{ padding-top:12px; }
+
   #dm-carriers{padding-bottom:20px;}
   #dm-speeds{margin-top:36px;}
-  /* 속도 영역은 세로도 확실히 표시 */
-  #dm-speed-options{padding-top:12px; overflow-x:auto; overflow-y:visible !important;}
+  #dm-speed-options{ /* 속도 영역 */
+    overflow-x:auto;
+    overflow-y:visible;
+  }
 
-  /* 모바일 고스트바(컨텐츠 섹션에서만 표시) */
+  /* 모바일 고스트바 */
   @media (max-width:900px){
     .ghostbar{
-      position:absolute; left:0; right:0; bottom:2px; height:3px; z-index:50; /* ★ z-index 상승 */
-      border-radius:999px; background:rgba(148,163,184,.15);
+      position:absolute; left:0; right:0; bottom:2px; height:3px; z-index:50;
+      border-radius:999px; background:rgba(148,163,184,.16);
       overflow:hidden; opacity:0; transition:opacity .25s; pointer-events:none;
     }
     .ghostbar.show{ opacity:1; }
@@ -164,13 +170,12 @@
   /* 오른쪽 여유 패드: 실제 요소(endpad)를 사용 */
   @media (max-width: 900px) {
     :root { --endpad: 22px; }
-    .x-scroll{ padding: 0 0 14px 0 !important; scroll-padding-inline-end: var(--endpad); overscroll-behavior-x: contain; }
-    .x-scroll::after{ content:""; display:inline-block; width:0 !important; height:0 !important; }
+    .x-scroll{ padding: 0 0 14px 0; scroll-padding-inline-end: var(--endpad); overscroll-behavior-x: contain; }
+    .x-scroll::after{ content:""; display:inline-block; width:0; height:0; }
     .endpad{ display:inline-block; width:var(--endpad); height:1px; }
     .x-scroll > .dm-btn{ margin-right:8px; }
     #dm-carriers{padding-left:8px}
-    /* 강제 오버플로우 */
-    #dm-carriers,#dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll,#internetCats,#topMainTabs{overflow-x:auto !important;}
+    #dm-carriers,#dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll,#internetCats,#topMainTabs{overflow-x:auto;}
   }
 
   #dm-total-scroll .total-line{display:inline-flex; align-items:baseline; gap:12px; min-width:max-content; white-space:nowrap;}
@@ -228,7 +233,7 @@
     <section id="internet-comp" class="dm-wrap" aria-label="인터넷 - 상세">
       <div class="dm-row">
         <div class="dm-title">통신사</div>
-        <div id="dm-carriers" class="x-scroll">
+        <div id="dm-carriers" class="x-scroll has-badges">
           <span class="dm-btn active" data-carrier="SK"><b>SK</b></span>
           <span class="dm-btn" data-carrier="KT"><b>KT</b></span>
           <span class="dm-btn" data-carrier="LG"><b>LG</b></span>
@@ -241,7 +246,7 @@
 
       <div class="dm-row" id="dm-speeds">
         <div class="dm-title">인터넷 속도</div>
-        <div id="dm-speed-options" class="x-scroll"><i class="endpad" aria-hidden="true"></i></div>
+        <div id="dm-speed-options" class="x-scroll has-badges"><i class="endpad" aria-hidden="true"></i></div>
       </div>
 
       <div class="dm-row">
@@ -251,13 +256,13 @@
 
       <div class="dm-row" id="dm-tv-section">
         <div class="dm-title">TV 요금제</div>
-        <div id="dm-tv-options" class="x-scroll"><i class="endpad" aria-hidden="true"></i></div>
+        <div id="dm-tv-options" class="x-scroll has-badges"><i class="endpad" aria-hidden="true"></i></div>
       </div>
 
       <div class="dm-row" id="dm-discounts">
         <div class="dm-title">결합 / 할인</div>
 
-        <div id="dm-bundle-mobile" class="x-scroll">
+        <div id="dm-bundle-mobile" class="x-scroll has-badges">
           <span class="dm-btn active" data-mobile="0"><b>결합 없음</b></span>
           <span class="dm-btn" data-mobile="-3300"><b>결합할인</b><small>-3,300원</small></span>
           <span class="dm-btn" data-mobile="-5500"><b>결합할인</b><small>-5,500원</small></span>
@@ -268,7 +273,7 @@
 
         <div id="dm-family-wrap" style="margin-top:10px;">
           <div style="font-weight:700;margin:8px 4px 6px 4px;color:#334155">SK 온가족할인</div>
-          <div id="dm-family" class="x-scroll">
+          <div id="dm-family" class="x-scroll has-badges">
             <span class="dm-btn active" data-family="none"><b>미적용</b></span>
             <span class="dm-btn" data-family="30"><b>30% 할인</b><small>속도별 자동 적용</small></span>
             <span class="dm-btn" data-family="50"><b>50% 할인</b><small>속도별 자동 적용</small></span>
@@ -372,7 +377,7 @@
 </footer>
 
 <script>
-/* 모바일 판별을 matchMedia로 통일 */
+/* 모바일 판별 */
 const isMobile = ()=> window.matchMedia('(max-width: 900px)').matches;
 
 /* 펼침바 */
@@ -390,26 +395,14 @@ navInternet.addEventListener('pointerleave', ()=> { if (!isMobile()) hideBarLate
 internetBar.addEventListener('pointerenter', ()=> { if (!isMobile()) showBarNow(); });
 internetBar.addEventListener('pointerleave', ()=> { if (!isMobile()) hideBarLater(); });
 
-/* 메뉴/서브메뉴는 고스트바 미표시(패드만) */
+/* endpad 생성 */
 function ensureEndpad(el){
   if(!el) return;
   if(el.querySelector(':scope > .endpad')) return;
-  const pad=document.createElement('i');
-  pad.className='endpad';
-  pad.setAttribute('aria-hidden','true');
-  el.appendChild(pad);
+  const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad);
 }
 
-/* 모바일: 선택칩 중앙정렬 */
-function showGhostbar(container){
-  if(!container) return;
-  const track = container.querySelector(':scope > .ghostbar');
-  if(track){
-    track.classList.add('show');
-    clearTimeout(track._hideT);
-    track._hideT = setTimeout(()=>track.classList.remove('show'), 900);
-  }
-}
+/* 모바일: 서브칩 중앙정렬 */
 function scrollCatsToSelected(){
   if (!isMobile()) return;
   const chip = Array.from(internetCats.querySelectorAll('span')).find(s=>s.dataset.carrier===state.carrier);
@@ -424,31 +417,11 @@ navInternet.addEventListener('click', (e)=>{
     e.stopPropagation();
     const willOpen = !internetBar.classList.contains('show');
     internetBar.classList.toggle('show');
-    if (willOpen){
-      requestAnimationFrame(()=>{
-        ensureEndpad(document.querySelector('#internetCats'));
-        ensureEndpad(document.querySelector('#topMainTabs'));
-        scrollCatsToSelected();
-      });
-    }
+    if (willOpen){ requestAnimationFrame(()=>{ ensureEndpad(internetCats); ensureEndpad(document.querySelector('#topMainTabs')); scrollCatsToSelected(); }); }
   } else showBarNow();
 });
 window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); });
 document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.target)&&!navInternet.contains(e.target); if (out) internetBar.classList.remove('show'); });
-
-/* 상세 표시 토글 */
-window.toggleInternetDetail = function(show){
-  const detail = document.getElementById('internet-detail');
-  const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
-  detail.style.display = show ? 'block' : 'none';
-  homeSections.forEach(s => s.style.display = show ? 'none' : 'flex');
-  if(show){
-    detail.scrollIntoView({behavior:'smooth', block:'start'});
-    if (isMobile()) {
-      refreshGhostbarsForTargets(['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']);
-    }
-  }
-};
 
 /* 데이터/요금표 */
 const SPEED_OPTIONS = { SK:["100","500","1000"], KT:["100","500","1000"], LG:["100","500","1000"], "스카이라이프":["100","200","500","1000"], "헬로비전":["100","160","500","1000"], SKPOP:["100","500","1000"] };
@@ -475,6 +448,67 @@ const money = n => (n||0).toLocaleString('ko-KR');
 
 /* 상태 */
 const state = { carrier:'SK', speed:null, tvIncluded:true, wifiIncluded:true, tv:null, mobileDiscount:0, familySelection:'none' };
+
+/* ===== 고스트바 매니저(이벤트 의존 X, RAF 감지) ===== */
+const ghostTargets = new Set();           // 요소 집합
+const ghostState = new Map();             // {left, lastShown}
+function prepareScroller(el){
+  if(!el) return;
+  // 메뉴/서브는 패드만 유지 (고스트바 없음)
+  if(el.id==='topMainTabs' || el.id==='internetCats'){ ensureEndpad(el); return; }
+
+  ensureEndpad(el);
+
+  // 고스트바 없으면 생성
+  if(!el.querySelector(':scope > .ghostbar')){
+    const track=document.createElement('div'); track.className='ghostbar';
+    const thumb=document.createElement('div'); thumb.className='thumb';
+    track.appendChild(thumb); el.appendChild(track);
+    if(getComputedStyle(el).position==='static'){ el.style.position='relative'; }
+  }
+  // 상태 초기화
+  ghostTargets.add(el);
+  ghostState.set(el, { left: el.scrollLeft, lastShown: 0 });
+  // 즉시 1회 업데이트
+  updateGhostbar(el, /*showOnce*/true);
+}
+function updateGhostbar(el, showOnce=false){
+  const track = el.querySelector(':scope > .ghostbar'); if(!track) return;
+  const cw = el.clientWidth, sw = el.scrollWidth;
+  if(sw <= cw){ track.style.display='none'; return; } else { track.style.display=''; }
+
+  const trackW = el.clientWidth;
+  const ratio  = Math.max(cw/sw, .12);
+  const thumbW = Math.max(trackW*ratio, 18);
+  const maxScroll= sw - cw;
+  const avail = trackW - thumbW;
+  const x = (maxScroll>0) ? (el.scrollLeft/maxScroll)*avail : 0;
+  const thumb = track.querySelector('.thumb');
+  thumb.style.width = thumbW+'px';
+  thumb.style.transform = `translateX(${x}px)`;
+  if(showOnce){ track.classList.add('show'); setTimeout(()=>track.classList.remove('show'), 900); }
+}
+function tick(){
+  const now = performance.now();
+  ghostTargets.forEach(el=>{
+    const st = ghostState.get(el) || {left:0,lastShown:0};
+    if(el.scrollLeft !== st.left){
+      st.left = el.scrollLeft;
+      updateGhostbar(el);
+      const track = el.querySelector(':scope > .ghostbar');
+      if(track){ track.classList.add('show'); st.lastShown = now; }
+      ghostState.set(el, st);
+    }else{
+      // 일정 시간 지나면 숨김
+      const track = el.querySelector(':scope > .ghostbar');
+      if(track && track.classList.contains('show') && (now - st.lastShown > 900)){
+        track.classList.remove('show');
+      }
+    }
+  });
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
 
 /* 렌더/로직 */
 function setActive(groupSel, btn){ $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
@@ -505,8 +539,8 @@ function renderSpeedOptions(){
     box.appendChild(el); if(i===0) state.speed=sp;
   });
   ensureEndpad(box);
+  prepareScroller(box); // ★ 고스트바 준비
   refreshSpeedPriceLabels();
-  refreshGhostbarsForTargets(['#dm-speed-options']);
 }
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
@@ -523,8 +557,8 @@ function renderTvPlans(){
   if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); return; }
   plans.forEach((p,i)=>{ const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name; el.innerHTML=`<b>${p.channels} 채널</b><small>${p.name} · 월 ${money(p.price)}원</small>`; box.appendChild(el); if(i===0) state.tv={id:p.id,name:p.name,price:p.price}; });
   ensureEndpad(box);
+  prepareScroller(box); // ★ 고스트바 준비
   updateTotal();
-  refreshGhostbarsForTargets(['#dm-tv-options']);
 }
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
@@ -534,7 +568,7 @@ function updateTotal(){
   const fam=getFamilyDiscount(); if(fam){ total+=fam; parts.push(`온가족할인 ${money(fam)}원`); }
   document.getElementById('dm-total').textContent=`월 ${money(total)}원`;
   document.getElementById('dm-breakdown').textContent=parts.join(' · ');
-  refreshGhostbarsForTargets(['#dm-total-scroll']);
+  prepareScroller(document.getElementById('dm-total-scroll')); // ★
 }
 
 /* 이벤트 */
@@ -542,10 +576,11 @@ document.getElementById('dm-carriers').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.carrier=btn.dataset.carrier; setActive('#dm-carriers', btn);
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-  ensureEndpad(document.querySelector('#dm-carriers'));
-  ensureEndpad(document.querySelector('#dm-bundle-mobile'));
-  ensureEndpad(document.querySelector('#dm-family'));
-  refreshGhostbarsForTargets(['#dm-carriers','#dm-bundle-mobile','#dm-family']);
+
+  ['#dm-carriers','#dm-bundle-mobile','#dm-family'].forEach(sel=>{
+    ensureEndpad(document.querySelector(sel));
+    prepareScroller(document.querySelector(sel));
+  });
   if (isMobile()) internetBar.classList.remove('show');
 });
 document.getElementById('dm-speeds').addEventListener('click', e=>{
@@ -592,67 +627,30 @@ function attachAutoScrollbarDesktop(el){
 }
 document.querySelectorAll('.x-scroll').forEach(el=> attachAutoScrollbarDesktop(el));
 
-/* 모바일: 고스트바(컨텐츠 섹션에만 설치) */
-function installGhostbar(container){
-  if(!container) return; if (!isMobile()) return;
-  // 메뉴/서브메뉴 제외
-  if(container.id==='topMainTabs' || container.id==='internetCats'){
-    ensureEndpad(container); return;
+/* 상세 표시 토글 */
+window.toggleInternetDetail = function(show){
+  const detail = document.getElementById('internet-detail');
+  const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
+  detail.style.display = show ? 'block' : 'none';
+  homeSections.forEach(s => s.style.display = show ? 'none' : 'flex');
+  if(show){
+    detail.scrollIntoView({behavior:'smooth', block:'start'});
+    if (isMobile()) {
+      ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']
+        .forEach(sel=> prepareScroller(document.querySelector(sel)));
+    }
   }
-  if (container.querySelector(':scope > .ghostbar')===null){
-    const track=document.createElement('div'); track.className='ghostbar';
-    const thumb=document.createElement('div'); thumb.className='thumb';
-    track.appendChild(thumb); container.appendChild(track);
-    if (getComputedStyle(container).position==='static'){ container.style.position='relative'; }
-  }
-  ensureEndpad(container);
-
-  let hideTimer=null;
-  function show(){ const track=container.querySelector(':scope > .ghostbar'); if(!track) return; track.classList.add('show'); if(hideTimer) clearTimeout(hideTimer); hideTimer=setTimeout(()=>track.classList.remove('show'), 900); }
-  function update(){
-    const track=container.querySelector(':scope > .ghostbar'); if(!track) return;
-    const sw=container.scrollWidth, cw=container.clientWidth;
-    if (sw<=cw){ track.style.display='none'; return; } track.style.display='';
-    const trackW=container.clientWidth;
-    const ratio=Math.max(cw/sw, .12);
-    const thumbW=Math.max(trackW*ratio, 18);
-    const maxScroll=sw-cw, avail=trackW-thumbW, x=(maxScroll>0)?(container.scrollLeft/maxScroll)*avail:0;
-    track.querySelector('.thumb').style.width=thumbW+'px';
-    track.querySelector('.thumb').style.transform=`translateX(${x}px)`;
-  }
-
-  const onScroll = ()=>{ update(); show(); };
-  const onTouch  = ()=>{ update(); show(); };
-
-  container.addEventListener('scroll', onScroll, {passive:true});
-  container.addEventListener('touchstart', onTouch, {passive:true});
-  container.addEventListener('touchend', onTouch, {passive:true});
-  window.addEventListener('resize', update);
-
-  requestAnimationFrame(()=>{ update(); show(); });
-}
-function refreshGhostbarsForTargets(list){
-  if (!isMobile()) return;
-  list.forEach(sel=>{
-    const el = typeof sel==='string' ? document.querySelector(sel) : sel;
-    if(!el) return;
-    installGhostbar(el);
-    el.dispatchEvent(new Event('scroll'));
-  });
-}
-function setupMobileGhostbars(){
-  if (!isMobile()) return;
-  const ghostTargets = ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll'];
-  const padOnlyTargets = ['#topMainTabs','#internetCats'];
-  refreshGhostbarsForTargets(ghostTargets);
-  padOnlyTargets.forEach(sel=> ensureEndpad(document.querySelector(sel)));
-}
-setupMobileGhostbars();
-window.addEventListener('resize', ()=>{ if (isMobile()) setupMobileGhostbars(); });
+};
 
 /* 초기 렌더 */
-applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-setupMobileGhostbars();
+function boot(){
+  applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
+  // 최초 대상 모두 준비
+  ['#topMainTabs','#internetCats','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']
+    .forEach(sel=> prepareScroller(document.querySelector(sel)));
+}
+boot();
+window.addEventListener('resize', ()=>{ if (isMobile()) boot(); });
 
 /* 폼 & 기타 */
 const fixedFormWrapper=document.getElementById('fixedFormWrapper');
