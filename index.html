@@ -1,4 +1,4 @@
-테스트1
+테스트2
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -155,15 +155,14 @@
     }
   }
 
-  /* 오른쪽 여유 패드: 실제 요소(endpad)를 사용 (pseudo는 scrollWidth 미반영 → 비활성화) */
+  /* 오른쪽 여유 패드: 실제 요소(endpad)를 사용 */
   @media (max-width: 900px) {
     :root { --endpad: 22px; }
     .x-scroll{ padding: 0 0 14px 0 !important; scroll-padding-inline-end: var(--endpad); -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
-    .x-scroll::after{ content:""; display:inline-block; width:0 !important; height:0 !important; } /* 기존 의사요소 패드 무효화 */
+    .x-scroll::after{ content:""; display:inline-block; width:0 !important; height:0 !important; }
     .endpad{ display:inline-block; width:var(--endpad); height:1px; }
     .x-scroll > .dm-btn{ margin-right:8px; }
     #dm-carriers{padding-left:8px}
-    /* 강제 오버플로우 */
     #dm-carriers,#dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll,#internetCats,#topMainTabs{overflow-x:auto !important;}
   }
 
@@ -397,7 +396,6 @@ function ensureEndpad(el){
 /* 모바일: 선택칩 중앙정렬 */
 function showGhostbar(container){
   if(!container) return;
-  // 고스트바는 컨텐츠 섹션에서만 사용 (메뉴/서브메뉴 제외)
   const track = container.querySelector(':scope > .ghostbar');
   if(track){
     track.classList.add('show');
@@ -440,7 +438,6 @@ window.toggleInternetDetail = function(show){
   if(show){
     detail.scrollIntoView({behavior:'smooth', block:'start'});
     if (isMobile()) {
-      // 컨텐츠 섹션만 고스트바 설치
       refreshGhostbarsForTargets(['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']);
     }
   }
@@ -500,7 +497,6 @@ function renderSpeedOptions(){
     if(sp==='500'){ const b=document.createElement('span'); b.className='badge-reco'; b.textContent='추천'; el.appendChild(b); }
     box.appendChild(el); if(i===0) state.speed=sp;
   });
-  // 패드 유지
   ensureEndpad(box);
   refreshSpeedPriceLabels();
   refreshGhostbarsForTargets(['#dm-speed-options']);
@@ -519,7 +515,7 @@ function renderTvPlans(){
   const plans=Array.isArray(TV_PLANS[state.carrier])?TV_PLANS[state.carrier]:[];
   if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); return; }
   plans.forEach((p,i)=>{ const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name; el.innerHTML=`<b>${p.channels} 채널</b><small>${p.name} · 월 ${money(p.price)}원</small>`; box.appendChild(el); if(i===0) state.tv={id:p.id,name:p.name,price:p.price}; });
-  ensureEndpad(box); // 패드 유지
+  ensureEndpad(box);
   updateTotal();
   refreshGhostbarsForTargets(['#dm-tv-options']);
 }
@@ -539,7 +535,6 @@ document.getElementById('dm-carriers').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.carrier=btn.dataset.carrier; setActive('#dm-carriers', btn);
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
-  // 패드 + 고스트바 재설치
   ensureEndpad(document.querySelector('#dm-carriers'));
   ensureEndpad(document.querySelector('#dm-bundle-mobile'));
   ensureEndpad(document.querySelector('#dm-family'));
@@ -604,6 +599,7 @@ function installGhostbar(container){
     if (getComputedStyle(container).position==='static'){ container.style.position='relative'; }
   }
   ensureEndpad(container);
+
   let hideTimer=null;
   function show(){ const track=container.querySelector(':scope > .ghostbar'); if(!track) return; track.classList.add('show'); if(hideTimer) clearTimeout(hideTimer); hideTimer=setTimeout(()=>track.classList.remove('show'), 900); }
   function update(){
@@ -617,11 +613,18 @@ function installGhostbar(container){
     track.querySelector('.thumb').style.width=thumbW+'px';
     track.querySelector('.thumb').style.transform=`translateX(${x}px)`;
   }
-  container.addEventListener('scroll', ()=>{ update(); }, {passive:true});
-  container.addEventListener('touchstart', ()=>{ update(); }, {passive:true});
-  container.addEventListener('touchend', ()=>{ update(); }, {passive:true});
+
+  /* ★ 수정 포인트: 이벤트마다 update + show 호출 */
+  const onScroll = ()=>{ update(); show(); };
+  const onTouch  = ()=>{ update(); show(); };
+
+  container.addEventListener('scroll', onScroll, {passive:true});
+  container.addEventListener('touchstart', onTouch, {passive:true});
+  container.addEventListener('touchend', onTouch, {passive:true});
   window.addEventListener('resize', update);
-  requestAnimationFrame(update);
+
+  // 초기 1회 갱신 + 잠깐 표시
+  requestAnimationFrame(()=>{ update(); show(); });
 }
 function refreshGhostbarsForTargets(list){
   if (!isMobile()) return;
@@ -629,13 +632,13 @@ function refreshGhostbarsForTargets(list){
     const el = typeof sel==='string' ? document.querySelector(sel) : sel;
     if(!el) return;
     installGhostbar(el);
-    el.dispatchEvent(new Event('scroll'));
+    el.dispatchEvent(new Event('scroll')); // 트리거
   });
 }
 function setupMobileGhostbars(){
   if (!isMobile()) return;
-  const ghostTargets = ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll']; // 컨텐츠 섹션만
-  const padOnlyTargets = ['#topMainTabs','#internetCats']; // 메뉴/서브메뉴: 바 숨김만
+  const ghostTargets = ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll'];
+  const padOnlyTargets = ['#topMainTabs','#internetCats'];
   refreshGhostbarsForTargets(ghostTargets);
   padOnlyTargets.forEach(sel=> ensureEndpad(document.querySelector(sel)));
 }
