@@ -1,4 +1,4 @@
-테10
+테11
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -26,28 +26,17 @@
   .nav-2025-main li{display:inline-flex;align-items:center;cursor:pointer;user-select:none}
   .nav-2025-menu-btn{font-size:24px;color:#8ea5d3;background:none;border:none;cursor:pointer;padding:2px 6px}
 
-  /* ===== 서브칩 바(아정당 실무 방식) ===== */
+  /* ===== 서브칩 바 ===== */
   .nav-2025-subbar-wrap{
     width:100%;left:0;position:absolute;top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999;
-    /* 오버레이 블로킹 방지 */
     pointer-events:none;
   }
   .nav-2025-subbar-wrap.show{display:block;}
   .nav-2025-subbar-wrap .subbar-stage{pointer-events:auto;}
-
-  .subbar-stage{
-    max-width:1280px;margin:0 auto;position:relative;padding:0 24px 6px 24px;
-  }
-
-  /* 뷰포트: 스크롤바 숨김 + 드래그/스와이프용 커서 */
-  .subbar-viewport{
-    position:relative;overflow:hidden; /* 실제 스크롤은 트랙에 부여 */
-    --edge: 32px;
-  }
-
-  /* 트랙: 가로 스크롤 컨테이너 */
+  .subbar-stage{max-width:1280px;margin:0 auto;position:relative;padding:0 24px 6px 24px;}
+  .subbar-viewport{position:relative;overflow:hidden;--edge:32px;}
   .subbar-track{
     overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
     white-space:nowrap; padding:6px 0 10px 0; scroll-behavior:smooth;
@@ -55,8 +44,6 @@
     mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
   }
   .subbar-track::-webkit-scrollbar{display:none;height:0}
-
-  /* 아이템(칩) */
   .nav-2025-subbar-inner{
     display:inline-flex; gap:10px; align-items:center; justify-content:flex-start;
     font-size:16px;font-weight:700;color:#334155; padding-right:28px;
@@ -69,8 +56,6 @@
   .nav-2025-subbar-inner span:hover{background:#f1f5ff;color:#1d4ed8}
   .nav-2025-subbar-inner span:focus-visible{box-shadow:0 0 0 3px rgba(59,130,246,.24);border-color:#bfdbfe}
   .nav-2025-subbar-inner .is-active{background:#eaf1ff;color:#1e40af;border-color:#c7ddff}
-
-  /* 좌/우 네비 버튼 */
   .subbar-nav{
     position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;
     width:36px;color:#1d4ed8;background:rgba(255,255,255,.92);backdrop-filter:saturate(140%) blur(2px);
@@ -81,11 +66,9 @@
   .subbar-nav.left{left:4px; transform:translateX(-6px)}
   .subbar-nav.right{right:4px; transform:translateX(6px)}
   .subbar-nav.show{opacity:1;pointer-events:auto;transform:translateX(0)}
-
-  /* 모바일에서 스크롤바 완전 제거 + 터치 영역 확보 */
   @media (max-width:900px){
     .nav-2025-subbar-inner{scrollbar-width:none}
-    .subbar-track{mask-image:none} /* 화면 좁아서 마스크는 제거 */
+    .subbar-track{mask-image:none}
     .subbar-nav{width:32px}
   }
 
@@ -117,7 +100,7 @@
 
   /* ===== 상담 폼(복원 + 최상위) ===== */
   #fixedFormWrapper{
-    position:fixed;left:0;right:0;bottom:0;z-index:1200; /* 최상위 */
+    position:fixed;left:0;right:0;bottom:0;z-index:1200;
     background:linear-gradient(90deg,#2563eb,#3b82f6);
     border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);
     transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;
@@ -170,25 +153,33 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  /* 공용 가로 스크롤 요소(기존 DM 영역은 유지) */
-  :root{ --endpad: 28px; }
-  .x-scroll{
-    overflow-x:auto; overflow-y:visible; position:relative;
-    white-space:nowrap; -webkit-overflow-scrolling:touch;
-    padding-bottom:10px; padding-right:var(--endpad);
-    scroll-padding-inline-end:var(--endpad);
-    scrollbar-gutter:stable both-edges;
+  /* ===== 상세(아래 구간) 공용: 스크롤바 없는 가로 스크롤 컴포넌트 ===== */
+  :root{ --endpad: 28px; --hs-edge: 28px; }
+  .hs-wrap{position:relative}
+  .hs-viewport{position:relative;overflow:hidden}
+  .hs-track{
+    overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
+    white-space:nowrap; padding-bottom:10px; padding-right:var(--endpad);
+    scroll-padding-inline-end:var(--endpad); scroll-behavior:smooth;
+    scrollbar-width:none; -ms-overflow-style:none;
+    mask-image: linear-gradient(to right, transparent 0, #000 var(--hs-edge), #000 calc(100% - var(--hs-edge)), transparent 100%);
   }
-  .x-scroll::-webkit-scrollbar{height:8px}
-  .x-scroll::-webkit-scrollbar-track{background:transparent}
-  .x-scroll::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
-  .x-scroll:hover::-webkit-scrollbar-thumb{background:#a8b4cf}
-  @supports (scrollbar-color:auto){
-    .x-scroll{scrollbar-color:#cfd6e6 transparent;scrollbar-width:thin}
+  .hs-track::-webkit-scrollbar{display:none;height:0}
+  .hs-nav{
+    position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;
+    width:32px;color:#1d4ed8;background:rgba(255,255,255,.95);
+    border:1px solid #e5ecff;border-radius:10px;cursor:pointer;opacity:0;pointer-events:none;
+    transition:opacity .18s, transform .18s; box-shadow:0 4px 16px rgba(59,130,246,.08); z-index:2;
   }
+  .hs-nav i{font-size:14px}
+  .hs-nav.left{left:-4px; transform:translateX(-6px)}
+  .hs-nav.right{right:-4px; transform:translateX(6px)}
+  .hs-nav.show{opacity:1;pointer-events:auto;transform:translateX(0)}
+  /* 기존 x-scroll 호환(그대로 써도 자동 업그레이드됨) */
+  .x-scroll{white-space:nowrap}
   @media (max-width:900px){
-    .x-scroll{scrollbar-width:none;-ms-overflow-style:none}
-    .x-scroll::-webkit-scrollbar{display:none;height:0}
+    .hs-track{mask-image:none}
+    .hs-nav{width:28px}
   }
 
   .dm-final-wrap{margin-top:18px;border:1px solid #e5e9f5;border-radius:12px;background:#fff}
@@ -201,9 +192,6 @@
   .dm-table tr:last-child td{border-bottom:none}
   .dm-chip{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef3ff;color:#2b59ff;font-weight:700;font-size:12px}
   .dm-tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#fff2f2;color:#d60028;font-weight:800;font-size:11px;margin-left:4px}
-  .dm-table-wrap{overflow-x:auto}
-  .dm-table-wrap::-webkit-scrollbar{height:8px}
-  .dm-table-wrap::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
 </style>
 </head>
 <body>
@@ -232,7 +220,7 @@
     </ul>
   </div>
 
-  <!-- 서브칩 바(아정당 실무 방식) -->
+  <!-- 서브칩 바 -->
   <div class="nav-2025-subbar-wrap" id="internetBar" role="region" aria-label="인터넷 카테고리">
     <div class="subbar-stage">
       <button class="subbar-nav left" id="subbarPrev" aria-label="왼쪽으로"><i class="fa-solid fa-chevron-left"></i></button>
@@ -341,7 +329,7 @@
           <span class="dm-chip" id="dm-final-carrier">SK</span>
         </div>
         <div class="dm-final-body">
-          <div class="dm-table-wrap x-scroll">
+          <div class="x-scroll dm-table-wrap" id="dm-table-scroll">
             <table class="dm-table" id="dm-final-table">
               <thead>
                 <tr>
@@ -437,6 +425,10 @@ const $ = s=>document.querySelector(s);
 const $$ = s=>document.querySelectorAll(s);
 const money = n => (n||0).toLocaleString('ko-KR');
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function ensureEndpad(el){
+  if(!el) return;
+  if(!el.querySelector(':scope > .endpad')){ const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad); }
+}
 
 /* ===== 메뉴/서브: 표시/숨김 ===== */
 const navInternet = $('#navInternet');
@@ -466,24 +458,14 @@ navInternet.addEventListener('click', (e)=>{
 window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); updateSubbarUI(); });
 document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.target)&&!navInternet.contains(e.target); if (out) internetBar.classList.remove('show'); });
 
-function ensureEndpad(el){
-  if(!el) return;
-  if(!el.querySelector(':scope > .endpad')){ const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad); }
-}
-
-/* ===== 서브칩 트랙: 드래그/휠/버튼 (임계값 적용 + 클릭 전달) ===== */
+/* ===== 서브칩 트랙: 드래그/휠/버튼 ===== */
 let drag = { active:false, moved:false, startX:0, startLeft:0, pointerId:null };
 const DRAG_THRESHOLD = 5;
-
 function onPointerDown(e){
-  if (e.pointerType === 'mouse' && e.button !== 0) return; // 좌클릭만
-  drag.active = true;
-  drag.moved = false;
-  drag.pointerId = e.pointerId;
-  drag.startX = e.clientX;
-  drag.startLeft = subbarTrack.scrollLeft;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  drag.active = true; drag.moved = false; drag.pointerId = e.pointerId;
+  drag.startX = e.clientX; drag.startLeft = subbarTrack.scrollLeft;
   subbarTrack.style.cursor = 'grabbing';
-  // setPointerCapture는 임계값 초과 시점에만 적용
 }
 function onPointerMove(e){
   if(!drag.active) return;
@@ -492,14 +474,11 @@ function onPointerMove(e){
     drag.moved = true;
     try{ subbarTrack.setPointerCapture(drag.pointerId); }catch(_){}
   }
-  if (drag.moved){
-    subbarTrack.scrollLeft = drag.startLeft - dx;
-  }
+  if (drag.moved){ subbarTrack.scrollLeft = drag.startLeft - dx; }
 }
 function onPointerUp(e){
   if(!drag.active) return;
   subbarTrack.style.cursor = '';
-  // 드래그로 간주되지 않으면 실제 칩 클릭 전달
   if(!drag.moved){
     const el = document.elementFromPoint(e.clientX, e.clientY);
     const chip = el && el.closest && el.closest('#internetCats span[data-carrier]');
@@ -512,7 +491,7 @@ subbarTrack.addEventListener('pointerdown', onPointerDown);
 subbarTrack.addEventListener('pointermove', onPointerMove);
 window.addEventListener('pointerup', onPointerUp);
 
-/* 휠을 가로 스크롤로 변환(Shift 불필요) */
+/* 휠을 가로 스크롤로 변환 */
 subbarTrack.addEventListener('wheel', (e)=>{
   const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
   if (max <= 0) return;
@@ -524,9 +503,7 @@ subbarTrack.addEventListener('wheel', (e)=>{
 }, {passive:false});
 
 /* 네비 버튼 */
-function scrollByAmount(px){
-  subbarTrack.scrollBy({left:px, behavior:'smooth'});
-}
+function scrollByAmount(px){ subbarTrack.scrollBy({left:px, behavior:'smooth'}); }
 btnPrev.addEventListener('click', ()=> scrollByAmount(-Math.max(220, subbarTrack.clientWidth*0.6)));
 btnNext.addEventListener('click', ()=> scrollByAmount(Math.max(220, subbarTrack.clientWidth*0.6)));
 
@@ -540,7 +517,7 @@ function updateSubbarUI(){
 subbarTrack.addEventListener('scroll', updateSubbarUI, {passive:true});
 window.addEventListener('resize', updateSubbarUI);
 
-/* 키보드 접근성: ←/→/Home/End 이동 */
+/* 키보드 접근성 */
 internetCats.addEventListener('keydown', (e)=>{
   const chips = Array.from(internetCats.querySelectorAll('span[data-carrier]'));
   const current = document.activeElement.closest('span[data-carrier]');
@@ -593,6 +570,72 @@ const SK_FAMILY = {"30":{"100":-6600,"500":-9900,"1000":-11550},"50":{"100":-110
 /* 상태 */
 const state = { carrier:'SK', speed:null, tvIncluded:true, wifiIncluded:true, tv:null, mobileDiscount:0, familySelection:'none' };
 
+/* ===== 상세 하위(x-scroll) 업그레이더: 스크롤바 없음 + 드래그 + 좌/우 버튼 ===== */
+function upgradeHScroll(el){
+  if(!el || el.dataset.hs==='1') return;
+  el.dataset.hs='1';
+
+  // 래퍼 구성
+  const wrap = document.createElement('div'); wrap.className='hs-wrap';
+  const viewport = document.createElement('div'); viewport.className='hs-viewport';
+  const leftBtn = document.createElement('button'); leftBtn.type='button'; leftBtn.className='hs-nav left'; leftBtn.setAttribute('aria-label','왼쪽으로'); leftBtn.innerHTML='<i class="fa-solid fa-chevron-left"></i>';
+  const rightBtn = document.createElement('button'); rightBtn.type='button'; rightBtn.className='hs-nav right'; rightBtn.setAttribute('aria-label','오른쪽으로'); rightBtn.innerHTML='<i class="fa-solid fa-chevron-right"></i>';
+
+  // 기존 클래스 보존 + 트랙 클래스로 승격
+  el.classList.add('hs-track');
+
+  // DOM 재배치
+  el.parentNode.insertBefore(wrap, el);
+  wrap.appendChild(leftBtn);
+  wrap.appendChild(viewport);
+  viewport.appendChild(el);
+  wrap.appendChild(rightBtn);
+
+  // 버튼 스크롤
+  function scrollBy(px){ el.scrollBy({left:px,behavior:'smooth'}); }
+  leftBtn.addEventListener('click', ()=> scrollBy(-Math.max(220, el.clientWidth*0.6)));
+  rightBtn.addEventListener('click', ()=> scrollBy(Math.max(220, el.clientWidth*0.6)));
+
+  // 드래그 스크롤
+  let d={on:false, moved:false, id:null, sx:0, sl:0};
+  el.addEventListener('pointerdown', (e)=>{
+    if (e.pointerType==='mouse' && e.button!==0) return;
+    d.on=true; d.moved=false; d.id=e.pointerId; d.sx=e.clientX; d.sl=el.scrollLeft; el.style.cursor='grabbing';
+  });
+  el.addEventListener('pointermove', (e)=>{
+    if(!d.on) return;
+    const dx=e.clientX-d.sx;
+    if(!d.moved && Math.abs(dx)>5){ d.moved=true; try{el.setPointerCapture(d.id);}catch(_){}} 
+    if(d.moved){ el.scrollLeft=d.sl-dx; }
+  });
+  window.addEventListener('pointerup', ()=>{
+    if(!d.on) return;
+    el.style.cursor=''; try{el.releasePointerCapture(d.id);}catch(_){}
+    d={on:false,moved:false,id:null,sx:0,sl:0};
+  });
+
+  // 휠을 가로로
+  el.addEventListener('wheel', (e)=>{
+    const max = el.scrollWidth - el.clientWidth; if(max<=0) return;
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if(delta!==0){ e.preventDefault(); el.scrollLeft = clamp(el.scrollLeft + delta, 0, max); }
+  }, {passive:false});
+
+  // 버튼 표시
+  function update(){
+    const max = el.scrollWidth - el.clientWidth;
+    const x = el.scrollLeft;
+    leftBtn.classList.toggle('show', x>2);
+    rightBtn.classList.toggle('show', x<max-2);
+  }
+  el.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  requestAnimationFrame(update);
+
+  // endpad 보증
+  ensureEndpad(el);
+}
+
 /* ===== 렌더/로직 ===== */
 function setActive(groupSel, btn){ $$(groupSel+' .dm-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
 function applyCarrierRules(){
@@ -623,6 +666,7 @@ function renderSpeedOptions(){
   });
   ensureEndpad(box);
   refreshSpeedPriceLabels();
+  upgradeHScroll(box);
 }
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
@@ -647,6 +691,7 @@ function renderTvPlans(){
   ensureEndpad(box);
   updateTotal();
   renderFinalTable();
+  upgradeHScroll(box);
 }
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
@@ -692,6 +737,7 @@ document.getElementById('dm-carriers').addEventListener('click', e=>{
   state.carrier=btn.dataset.carrier; setActive('#dm-carriers', btn);
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
   ensureEndpad($('#dm-carriers')); ensureEndpad($('#dm-bundle-mobile')); ensureEndpad($('#dm-family'));
+  upgradeHScroll($('#dm-carriers')); upgradeHScroll($('#dm-bundle-mobile')); upgradeHScroll($('#dm-family'));
   if (isMobile()) internetBar.classList.remove('show');
   setActiveChip(state.carrier);
   scrollCatsToSelected(); updateSubbarUI();
@@ -744,8 +790,13 @@ window.toggleInternetDetail = function(show){
 /* 초기 렌더 */
 function boot(){
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal(); renderFinalTable();
-  ['#topMainTabs','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll','#dm-final .dm-table-wrap']
-    .forEach(sel=> ensureEndpad(document.querySelector(sel)));
+
+  // 상세 하위 모든 x-scroll 업그레이드(스크롤바 제거 + 드래그 + 버튼)
+  ['#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll','#dm-table-scroll']
+    .forEach(sel=>{ const el=document.querySelector(sel); if(el){ ensureEndpad(el); upgradeHScroll(el); } });
+
+  // 상단 탭은 그대로
+  ensureEndpad(document.querySelector('#topMainTabs'));
   updateSubbarUI();
 }
 boot();
