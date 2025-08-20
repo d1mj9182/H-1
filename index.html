@@ -1,4 +1,4 @@
-테14
+테15
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -39,8 +39,8 @@
   .subbar-viewport{position:relative;overflow:hidden;--edge:32px;}
   .subbar-track{
     overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
-    white-space:nowrap; padding:6px 0 16px 0; /* 하단 여백 ↑ */
-    scroll-behavior:auto; /* 빠른 이동 */
+    white-space:nowrap; padding:6px 0 16px 0;
+    scroll-behavior:auto;
     scrollbar-width:none; -ms-overflow-style:none;
     mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
   }
@@ -143,11 +143,11 @@
   .dm-wrap{max-width:900px;margin:20px auto;font-family:system-ui,Segoe UI,Roboto,Apple SD Gothic Neo,Arial,sans-serif;color:#111}
   .dm-row{margin:18px 0}
   .dm-title{font-weight:800;margin-bottom:8px}
-  .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:12px 14px 16px 14px; /* 하단 패딩 ↑ */ margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative;white-space:nowrap}
+  .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:12px 14px 16px 14px; margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative;white-space:nowrap}
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
   .dm-btn.active{border-color:#d60028;box-shadow:0 0 0 3px rgba(214,0,40,.12)}
-  .badge-reco{position:absolute;right:8px;bottom:-10px; /* ↓ 아래로 이동해 안 잘림 */ background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
+  .badge-reco{position:absolute;right:8px;bottom:-10px; background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
 
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
@@ -169,9 +169,9 @@
   .hs-viewport{position:relative;overflow:hidden}
   .hs-track{
     overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
-    white-space:nowrap; padding-bottom:22px; /* 하단 여백 ↑ 배지 노출 */
+    white-space:nowrap; padding-bottom:22px;
     padding-right:var(--endpad); scroll-padding-inline-end:var(--endpad);
-    scroll-behavior:auto; /* 빠른 이동 */
+    scroll-behavior:auto;
     scrollbar-width:none; -ms-overflow-style:none;
     mask-image: linear-gradient(to right, transparent 0, #000 var(--hs-edge), #000 calc(100% - var(--hs-edge)), transparent 100%);
   }
@@ -501,7 +501,7 @@ function onPointerDown(e){
 }
 function onPointerMove(e){
   if(!drag.active) return;
-  const dx = (e.clientX - drag.startX) * 1.35; /* 드래그 가속 */
+  const dx = (e.clientX - drag.startX) * 1.35;
   if (!drag.moved && Math.abs(dx) > DRAG_THRESHOLD){
     drag.moved = true;
     try{ subbarTrack.setPointerCapture(drag.pointerId); }catch(_){}
@@ -528,7 +528,7 @@ subbarTrack.addEventListener('wheel', (e)=>{
   const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
   if (max <= 0) return;
   const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-  const delta = raw * 1.6; /* 가속 계수 */
+  const delta = raw * 1.6;
   if (delta !== 0){
     e.preventDefault();
     subbarTrack.scrollLeft = clamp(subbarTrack.scrollLeft + delta, 0, max);
@@ -620,7 +620,7 @@ function upgradeHScroll(el){
   viewport.appendChild(el);
   wrap.appendChild(rightBtn);
 
-  function scrollBy(px){ el.scrollBy({left:px,behavior:'auto'}); } /* 빠르게 */
+  function scrollBy(px){ el.scrollBy({left:px,behavior:'auto'}); }
   leftBtn.addEventListener('click', ()=> scrollBy(-Math.max(360, el.clientWidth*0.9)));
   rightBtn.addEventListener('click', ()=> scrollBy(Math.max(360, el.clientWidth*0.9)));
 
@@ -631,7 +631,7 @@ function upgradeHScroll(el){
   });
   el.addEventListener('pointermove', (e)=>{
     if(!d.on) return;
-    const dx=(e.clientX-d.sx)*1.35; /* 드래그 가속 */
+    const dx=(e.clientX-d.sx)*1.35;
     if(!d.moved && Math.abs(dx)>5){ d.moved=true; try{el.setPointerCapture(d.id);}catch(_){}} 
     if(d.moved){ el.scrollLeft=d.sl-dx; }
   });
@@ -644,7 +644,7 @@ function upgradeHScroll(el){
   el.addEventListener('wheel', (e)=>{
     const max = el.scrollWidth - el.clientWidth; if(max<=0) return;
     const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    const delta = raw * 1.6; /* 가속 */
+    const delta = raw * 1.6;
     if(delta!==0){ e.preventDefault(); el.scrollLeft = clamp(el.scrollLeft + delta, 0, max); }
   }, {passive:false});
 
@@ -818,8 +818,7 @@ window.toggleInternetDetail = function(show){
   const detail = document.getElementById('internet-detail');
   const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
   detail.style.display = show ? 'block' : 'none';
-  homeSections.for
-  homeSections.forEach(sec => sec.style.display = show ? 'none' : 'flex');
+  homeSections.forEach(sec => sec.style.display = show ? 'none' : 'flex'); /* ← 오타 수정 완료 */
   if(show){
     applyCarrierRules();
     renderSpeedOptions();
@@ -836,15 +835,9 @@ window.toggleInternetDetail = function(show){
 }
 
 /* ===== 고정 버튼 동작 ===== */
-$('#consultOpenBtn').addEventListener('click', ()=>{
-  $('#fixedFormWrapper').classList.add('active');
-});
-$('#consultCloseBtn').addEventListener('click', ()=>{
-  $('#fixedFormWrapper').classList.remove('active');
-});
-$('#scrollTopBtn').addEventListener('click', ()=>{
-  window.scrollTo({top:0, behavior:'smooth'});
-});
+$('#consultOpenBtn').addEventListener('click', ()=>{ $('#fixedFormWrapper').classList.add('active'); });
+$('#consultCloseBtn').addEventListener('click', ()=>{ $('#fixedFormWrapper').classList.remove('active'); });
+$('#scrollTopBtn').addEventListener('click', ()=>{ window.scrollTo({top:0, behavior:'smooth'}); });
 
 /* 개인정보 더보기 아코디언 */
 const privacyToggle = $('#privacyAccordionToggle');
