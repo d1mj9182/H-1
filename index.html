@@ -1,4 +1,4 @@
-테7
+테88
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +13,7 @@
   *,*::before,*::after{box-sizing:border-box}
   body{background:#f7f8fb;}
 
-  /* ===== 상단바/네비 (메뉴 레이아웃 고정) ===== */
+  /* ===== 상단바/네비 ===== */
   .nav-auth-bar{width:100%;background:#f4f7fe;border-bottom:1px solid #e3eaf6}
   .nav-auth-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
   .nav-brand{display:flex;align-items:center;gap:10px;font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:800;letter-spacing:-.01em;color:#2563eb;font-size:22px;cursor:pointer}
@@ -32,12 +32,12 @@
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
   }
   .nav-2025-subbar-wrap.show{display:block;}
+  /* ✔ 서브칩: 스크롤바 + 바 숨김 + pill, 네모테두리 제거 */
   .nav-2025-subbar-inner{
     max-width:1280px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:flex-start;
     padding:6px 24px 10px 24px;font-size:16px;font-weight:700;color:#334155;
-    user-select:none; -webkit-user-select:none; white-space:nowrap; overflow-x:auto;
+    white-space:nowrap; overflow-x:auto; padding-right:28px;   /* 끝 잘림 방지 */
   }
-  /* ✔ 서브메뉴 칩: 테두리 네모 제거 + pill */
   .nav-2025-subbar-inner span{
     cursor:pointer; user-select:none; -webkit-user-select:none;
     padding:8px 14px;border-radius:999px;transition:background .12s,color .12s;
@@ -95,7 +95,6 @@
   .dm-wrap{max-width:900px;margin:20px auto;font-family:system-ui,Segoe UI,Roboto,Apple SD Gothic Neo,Arial,sans-serif;color:#111}
   .dm-row{margin:18px 0}
   .dm-title{font-weight:800;margin-bottom:8px}
-
   .dm-btn{display:inline-flex;align-items:flex-start;gap:4px;vertical-align:top;min-width:140px;padding:10px 14px;margin:4px;border:1.8px solid #d6d9e0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;line-height:1.2;position:relative;white-space:nowrap}
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
@@ -121,7 +120,8 @@
   .x-scroll{
     overflow-x:auto; overflow-y:visible; position:relative;
     white-space:nowrap; -webkit-overflow-scrolling:touch;
-    padding-bottom:10px; scroll-padding-inline-end:var(--endpad);
+    padding-bottom:10px; padding-right:var(--endpad);   /* 끝 잘림 방지 */
+    scroll-padding-inline-end:var(--endpad);
     scrollbar-gutter:stable both-edges;
   }
   .x-scroll::-webkit-scrollbar{height:8px}
@@ -184,8 +184,7 @@
     </ul>
   </div>
   <div class="nav-2025-subbar-wrap" id="internetBar">
-    <div class="nav-2025-subbar-inner" id="internetCats">
-      <!-- ✔ 요청한 통신사만 노출 -->
+    <div class="nav-2025-subbar-inner x-scroll" id="internetCats">
       <span data-carrier="SK">SK</span>
       <span data-carrier="KT">KT</span>
       <span data-carrier="LG">LG</span>
@@ -232,18 +231,6 @@
       <div class="dm-row" id="dm-tv-section">
         <div class="dm-title">TV 요금제</div>
         <div id="dm-tv-options" class="x-scroll has-badges"><i class="endpad" aria-hidden="true"></i></div>
-
-        <!-- ▼ 전체 채널 보기(토글)—캐리어별 채널목록 -->
-        <div class="dm-help" style="margin-top:8px;">
-          <button id="dm-channels-toggle" type="button" class="dm-btn" style="min-width:auto;padding:8px 12px;">
-            전체 채널 보기
-          </button>
-        </div>
-        <div id="dm-channels-panel" class="privacy-panel" role="region" aria-label="채널 목록">
-          <div class="privacy-panel-inner">
-            <div id="dm-channels-list">채널 정보를 불러오는 중…</div>
-          </div>
-        </div>
       </div>
 
       <!-- 4) 결합 / 할인 -->
@@ -419,9 +406,7 @@ document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.targ
 
 function ensureEndpad(el){
   if(!el) return;
-  if(!el.querySelector(':scope > .endpad')){
-    const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad);
-  }
+  if(!el.querySelector(':scope > .endpad')){ const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad); }
 }
 
 /* 모바일 카테칩 중앙정렬 */
@@ -458,16 +443,6 @@ const INTERNET_MATRIX = {
 };
 const SK_FAMILY = {"30":{"100":-6600,"500":-9900,"1000":-11550},"50":{"100":-11000,"500":-16500,"1000":-19250}};
 
-/* ▼ 채널 목록(샘플/구조 제공: 필요 시 실제 채널로 교체) */
-const CHANNELS = {
-  SK: ["KBS1","KBS2","MBC","SBS","EBS1","JTBC","MBN","채널A","TV조선","YTN","연합뉴스TV","SBS스포츠","KBS드라마","OCN","tvN","Mnet","ENA","ONGamenet","Disney Junior","Tooniverse","Nickelodeon","애니박스","국악방송","아리랑TV","이데일리TV"],
-  KT: ["KBS1","KBS2","MBC","SBS","EBS1","JTBC","MBN","채널A","TV조선","연합뉴스TV","KBSN스포츠","SBS스포츠","SPOTV","OCN","tvN","ENA","Mnet","디즈니채널","애니맥스","투니버스","카툰네트워크","YTN","아리랑TV","BBS불교","CBS"],
-  LG: ["KBS1","KBS2","MBC","SBS","EBS1","JTBC","MBN","채널A","TV조선","연합뉴스TV","SPOTV","SPOTV2","OCN","tvN","ENA","Mnet","디즈니채널","투니버스","카툰네트워크","EBS2","아리랑TV","YTN","CBS","BBS","GMTV"],
-  "스카이라이프": ["KBS1","KBS2","MBC","SBS","EBS1","EBS2","JTBC","MBN","채널A","TV조선","연합뉴스TV","SPOTV","OCN","tvN","ENA","Mnet","애니박스","카툰네트워크","디즈니채널","투니버스","YTN","아리랑TV","한국경제TV","이데일리TV","국회방송"],
-  "헬로비전": ["KBS1","KBS2","MBC","SBS","EBS1","JTBC","MBN","채널A","TV조선","연합뉴스TV","SPOTV","OCN","tvN","ENA","Mnet","애니맥스","투니버스","디즈니채널","YTN","아리랑TV","국회방송","복지TV","이데일리TV","홈&쇼핑","GS SHOP"],
-  SKPOP: ["KBS1","KBS2","MBC","SBS","EBS1","JTBC","MBN","채널A","TV조선","연합뉴스TV","SBS스포츠","KBSN스포츠","OCN","tvN","ENA","Mnet","Tooniverse","Nickelodeon","Disney Junior","애니박스","YTN","아리랑TV","채널차이나","NHK World","CGTN"]
-};
-
 /* 상태 */
 const state = { carrier:'SK', speed:null, tvIncluded:true, wifiIncluded:true, tv:null, mobileDiscount:0, familySelection:'none' };
 
@@ -495,7 +470,7 @@ function renderSpeedOptions(){
   (SPEED_OPTIONS[state.carrier]||[]).forEach((sp,i)=>{
     const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.speed=sp;
     const label=sp==='1000'?'1G':sp+'M';
-    el.innerHTML=`<b>${label}</b><small class="p">월 - 원</small>`;
+    el.innerHTML=`<b>${label} 월 - 원</b>`;
     if(sp==='500'){ const b=document.createElement('span'); b.className='badge-reco'; b.textContent='추천'; el.appendChild(b); }
     box.appendChild(el); if(i===0) state.speed=sp;
   });
@@ -505,8 +480,9 @@ function renderSpeedOptions(){
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
     const sp=btn.dataset.speed; const prev=state.speed; state.speed=sp;
-    const price=getInternetPrice(); const small=btn.querySelector('small.p');
-    if(small) small.textContent=`월 ${money(price)}원`; state.speed=prev;
+    const price=getInternetPrice();
+    btn.querySelector('b').textContent = (sp==='1000'?'1G':sp+'M') + ' 월 ' + money(price) + '원';
+    state.speed=prev;
   });
 }
 function renderTvPlans(){
@@ -515,22 +491,17 @@ function renderTvPlans(){
   section.style.display='';
   const plans=Array.isArray(TV_PLANS[state.carrier])?TV_PLANS[state.carrier]:[];
   if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); renderFinalTable(); return; }
-  plans.forEach((p,i)=>{ const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name; el.innerHTML=`<b>${p.channels} 채널</b><small>${p.name} · 월 ${money(p.price)}원</small>`; box.appendChild(el); if(i===0) state.tv={id:p.id,name:p.name,price:p.price}; });
+  plans.forEach((p,i)=>{
+    const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name;
+    /* ✔ 원복: 한 줄 형식 */
+    el.innerHTML=`<b>${p.channels} 채널 ${p.name} · 월 ${money(p.price)}원</b>`;
+    box.appendChild(el);
+    if(i===0) state.tv={id:p.id,name:p.name,price:p.price};
+  });
   ensureEndpad(box);
   updateTotal();
   renderFinalTable();
-  renderChannelsList(); // 채널 목록 갱신
 }
-function renderChannelsList(){
-  const list = CHANNELS[state.carrier]||[];
-  const el = $('#dm-channels-list');
-  if(!list.length){ el.innerHTML = '채널표 준비중입니다.'; return; }
-  el.innerHTML = `<div style="line-height:1.9;column-gap:24px;columns:2;max-width:820px;">
-    ${list.map(ch=>`<span>• ${ch}</span>`).join('<br>')}
-  </div>
-  <div class="dm-help" style="margin-top:8px;">* 지역/기간/프로모션에 따라 편성 변동 가능</div>`;
-}
-
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
   if(internet>0){ const label=state.speed==='1000'?'1G':(state.speed+'M'); parts.push(`인터넷 ${label} ${money(internet)}원`); total+=internet; }
@@ -600,15 +571,6 @@ document.getElementById('dm-bundle-mobile').addEventListener('click', e=>{
 document.getElementById('dm-family').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.familySelection=btn.dataset.family||'none'; setActive('#dm-family', btn); updateTotal(); renderFinalTable();
-});
-
-/* 채널 토글 */
-const chToggle = document.getElementById('dm-channels-toggle');
-const chPanel  = document.getElementById('dm-channels-panel');
-chToggle.addEventListener('click', ()=>{
-  const willOpen = !chPanel.classList.contains('open');
-  chPanel.classList.toggle('open', willOpen);
-  chToggle.textContent = willOpen ? '채널 접기' : '전체 채널 보기';
 });
 
 /* 카테고리 → 상세 */
