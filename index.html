@@ -1,4 +1,4 @@
-테88
+테9
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -26,29 +26,64 @@
   .nav-2025-main li{display:inline-flex;align-items:center;cursor:pointer;user-select:none}
   .nav-2025-menu-btn{font-size:24px;color:#8ea5d3;background:none;border:none;cursor:pointer;padding:2px 6px}
 
+  /* ===== 서브칩 바(아정당 실무 방식) ===== */
   .nav-2025-subbar-wrap{
     width:100%;left:0;position:absolute;top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
     box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
   }
   .nav-2025-subbar-wrap.show{display:block;}
-  /* ✔ 서브칩: 스크롤바 + 바 숨김 + pill, 네모테두리 제거 */
+
+  .subbar-stage{
+    max-width:1280px;margin:0 auto;position:relative;padding:0 24px 6px 24px;
+  }
+
+  /* 뷰포트: 스크롤바 숨김 + 드래그/스와이프용 커서 */
+  .subbar-viewport{
+    position:relative;overflow:hidden; /* 실제 스크롤은 트랙에 부여 */
+    --edge: 32px;
+  }
+
+  /* 트랙: 가로 스크롤 컨테이너 */
+  .subbar-track{
+    overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
+    white-space:nowrap; padding:6px 0 10px 0; scroll-behavior:smooth;
+    scrollbar-width:none; -ms-overflow-style:none;
+    mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
+  }
+  .subbar-track::-webkit-scrollbar{display:none;height:0}
+
+  /* 아이템(칩) */
   .nav-2025-subbar-inner{
-    max-width:1280px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:flex-start;
-    padding:6px 24px 10px 24px;font-size:16px;font-weight:700;color:#334155;
-    white-space:nowrap; overflow-x:auto; padding-right:28px;   /* 끝 잘림 방지 */
+    display:inline-flex; gap:10px; align-items:center; justify-content:flex-start;
+    font-size:16px;font-weight:700;color:#334155; padding-right:28px;
   }
   .nav-2025-subbar-inner span{
-    cursor:pointer; user-select:none; -webkit-user-select:none;
+    cursor:pointer; user-select:none; -webkit-user-select:none; outline: none;
     padding:8px 14px;border-radius:999px;transition:background .12s,color .12s;
-    border:none; background:transparent; display:inline-block;
+    border:1px solid transparent; background:transparent; display:inline-block;
   }
   .nav-2025-subbar-inner span:hover{background:#f1f5ff;color:#1d4ed8}
-  .nav-2025-subbar-inner::-webkit-scrollbar{height:8px}
-  .nav-2025-subbar-inner::-webkit-scrollbar-thumb{background:#cfd6e6;border-radius:999px}
-  @media(max-width:900px){
-    .nav-2025-subbar-inner{scrollbar-width:none;-ms-overflow-style:none}
-    .nav-2025-subbar-inner::-webkit-scrollbar{display:none;height:0}
+  .nav-2025-subbar-inner span:focus-visible{box-shadow:0 0 0 3px rgba(59,130,246,.24);border-color:#bfdbfe}
+  .nav-2025-subbar-inner .is-active{background:#eaf1ff;color:#1e40af;border-color:#c7ddff}
+
+  /* 좌/우 네비 버튼 */
+  .subbar-nav{
+    position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;
+    width:36px;color:#1d4ed8;background:rgba(255,255,255,.92);backdrop-filter:saturate(140%) blur(2px);
+    border:1px solid #e5ecff;border-radius:10px;cursor:pointer;opacity:0;pointer-events:none;
+    transition:opacity .18s, transform .18s; box-shadow:0 4px 16px rgba(59,130,246,.08);
+  }
+  .subbar-nav i{font-size:16px}
+  .subbar-nav.left{left:4px; transform:translateX(-6px)}
+  .subbar-nav.right{right:4px; transform:translateX(6px)}
+  .subbar-nav.show{opacity:1;pointer-events:auto;transform:translateX(0)}
+
+  /* 모바일에서 스크롤바 완전 제거 + 터치 영역 확보 */
+  @media (max-width:900px){
+    .nav-2025-subbar-inner{scrollbar-width:none}
+    .subbar-track{mask-image:none} /* 화면 좁아서 마스크는 제거 */
+    .subbar-nav{width:32px}
   }
 
   /* ===== 고정 버튼 ===== */
@@ -73,25 +108,16 @@
     #scrollTopBtn .txt{display:none}
   }
 
-  /* ===== 하단 폼 ===== */
-  #fixedFormWrapper{position:fixed;left:0;right:0;bottom:0;z-index:52;background:linear-gradient(90deg,#2563eb,#3b82f6);border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;transform:translateY(100%);opacity:0;pointer-events:none}
-  #fixedFormWrapper.active{transform:translateY(0);opacity:1;pointer-events:auto}
-  .consult-form-inner{background:#fff;border-radius:.8rem;box-shadow:0 4px 16px rgba(59,130,246,.1);padding:1.2rem .8rem;display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;max-width:680px;margin:1.1rem auto}
-  .consult-form-inner input,.consult-form-inner select{min-width:100px;font-size:1rem;padding:.55rem .7rem;border:2px solid #93c5fd;border-radius:.55rem;background:#f8fafc}
-  .consult-form-inner button{min-width:90px;padding:.6rem 1.6rem;font-size:1rem;font-weight:700;background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;border-radius:.55rem;border:none}
-  #consultCloseBtn{background:none;border:none;color:#2563eb;font-size:1.4rem;font-weight:700;position:absolute;right:16px;top:16px;cursor:pointer}
-
   /* ===== 섹션 ===== */
   .custom-section{width:100%;background:#fff;display:flex;align-items:center;justify-content:center;padding:80px 0;min-height:520px}
   .section-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 2vw;display:flex;flex-direction:column;align-items:center}
 
-  /* ===== 푸터 ===== */
+  /* ===== 하단 폼/푸터/DM 등 기존 그대로 ===== */
   .footer-basic{background:#f8f9fa;border-top:1px solid #ececec;margin-top:30px;padding:36px 0 92px 0}
   .footer-inner{max-width:950px;margin:0 auto;padding:0 16px}
   .footer-biz{font-size:14px;color:#222;line-height:1.7;text-align:left;word-break:keep-all}
   .footer-copy{text-align:right;color:#b3bfd2;font-size:13px;margin-top:14px}
 
-  /* ===== DM 컴포넌트 ===== */
   .dm-wrap{max-width:900px;margin:20px auto;font-family:system-ui,Segoe UI,Roboto,Apple SD Gothic Neo,Arial,sans-serif;color:#111}
   .dm-row{margin:18px 0}
   .dm-title{font-weight:800;margin-bottom:8px}
@@ -115,12 +141,12 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  /* ===== 공용 가로 스크롤 컨테이너 ===== */
+  /* 공용 가로 스크롤 요소(기존 DM 영역은 유지) */
   :root{ --endpad: 28px; }
   .x-scroll{
     overflow-x:auto; overflow-y:visible; position:relative;
     white-space:nowrap; -webkit-overflow-scrolling:touch;
-    padding-bottom:10px; padding-right:var(--endpad);   /* 끝 잘림 방지 */
+    padding-bottom:10px; padding-right:var(--endpad);
     scroll-padding-inline-end:var(--endpad);
     scrollbar-gutter:stable both-edges;
   }
@@ -135,14 +161,7 @@
     .x-scroll{scrollbar-width:none;-ms-overflow-style:none}
     .x-scroll::-webkit-scrollbar{display:none;height:0}
   }
-  .has-badges{padding-top:14px}
-  .endpad{display:inline-block;width:var(--endpad);height:1px}
 
-  #dm-carriers{padding:0 6px 18px 6px}
-  #dm-speed-options,#dm-tv-options,#dm-bundle-mobile,#dm-family,#dm-total-scroll{padding-left:6px}
-  #dm-speed-options,#dm-tv-options{overflow-y:visible}
-
-  /* ===== 최종 요금표 테이블 ===== */
   .dm-final-wrap{margin-top:18px;border:1px solid #e5e9f5;border-radius:12px;background:#fff}
   .dm-final-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eef2fb}
   .dm-final-hd b{font-size:16px}
@@ -183,15 +202,25 @@
       <i class="endpad" aria-hidden="true"></i>
     </ul>
   </div>
-  <div class="nav-2025-subbar-wrap" id="internetBar">
-    <div class="nav-2025-subbar-inner x-scroll" id="internetCats">
-      <span data-carrier="SK">SK</span>
-      <span data-carrier="KT">KT</span>
-      <span data-carrier="LG">LG</span>
-      <span data-carrier="스카이라이프">스카이라이프</span>
-      <span data-carrier="헬로비전">헬로비전</span>
-      <span data-carrier="SKPOP">SKPOP(알뜰)</span>
-      <i class="endpad" aria-hidden="true"></i>
+
+  <!-- 서브칩 바(아정당 실무 방식) -->
+  <div class="nav-2025-subbar-wrap" id="internetBar" role="region" aria-label="인터넷 카테고리">
+    <div class="subbar-stage">
+      <button class="subbar-nav left" id="subbarPrev" aria-label="왼쪽으로"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="subbar-viewport">
+        <div class="subbar-track" id="subbarTrack">
+          <div class="nav-2025-subbar-inner" id="internetCats" role="listbox" aria-orientation="horizontal" tabindex="0">
+            <span data-carrier="SK" role="option" tabindex="0" class="is-active">SK</span>
+            <span data-carrier="KT" role="option" tabindex="0">KT</span>
+            <span data-carrier="LG" role="option" tabindex="0">LG</span>
+            <span data-carrier="스카이라이프" role="option" tabindex="0">스카이라이프</span>
+            <span data-carrier="헬로비전" role="option" tabindex="0">헬로비전</span>
+            <span data-carrier="SKPOP" role="option" tabindex="0">SKPOP(알뜰)</span>
+            <i class="endpad" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <button class="subbar-nav right" id="subbarNext" aria-label="오른쪽으로"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
   </div>
 </div>
@@ -378,14 +407,18 @@ const isMobile = ()=> window.matchMedia('(max-width: 900px)').matches;
 const $ = s=>document.querySelector(s);
 const $$ = s=>document.querySelectorAll(s);
 const money = n => (n||0).toLocaleString('ko-KR');
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-/* ===== 메뉴/서브 ===== */
+/* ===== 메뉴/서브: 표시/숨김 ===== */
 const navInternet = $('#navInternet');
 const internetBar = $('#internetBar');
+const subbarTrack = $('#subbarTrack');
 const internetCats = $('#internetCats');
-let hoverTimer = null;
-const CLOSE_DELAY = 450;
-function showBarNow(){ clearTimeout(hoverTimer); internetBar.classList.add('show'); }
+const btnPrev = $('#subbarPrev');
+const btnNext = $('#subbarNext');
+
+let hoverTimer=null; const CLOSE_DELAY=450;
+function showBarNow(){ clearTimeout(hoverTimer); internetBar.classList.add('show'); updateSubbarUI(); }
 function hideBarLater(){ clearTimeout(hoverTimer); hoverTimer=setTimeout(()=>internetBar.classList.remove('show'), CLOSE_DELAY); }
 
 navInternet.addEventListener('pointerenter', ()=>{ if (!isMobile()) showBarNow(); });
@@ -398,10 +431,10 @@ navInternet.addEventListener('click', (e)=>{
     e.stopPropagation();
     const willOpen = !internetBar.classList.contains('show');
     internetBar.classList.toggle('show');
-    if (willOpen){ requestAnimationFrame(()=>{ ensureEndpad(internetCats); ensureEndpad($('#topMainTabs')); scrollCatsToSelected(); }); }
+    if (willOpen){ requestAnimationFrame(()=>{ ensureEndpad(internetCats); scrollCatsToSelected(); updateSubbarUI(); }); }
   } else showBarNow();
 });
-window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); });
+window.addEventListener('resize', ()=>{ if (!isMobile()) internetBar.classList.remove('show'); updateSubbarUI(); });
 document.addEventListener('click', (e)=>{ const out=!internetBar.contains(e.target)&&!navInternet.contains(e.target); if (out) internetBar.classList.remove('show'); });
 
 function ensureEndpad(el){
@@ -409,15 +442,84 @@ function ensureEndpad(el){
   if(!el.querySelector(':scope > .endpad')){ const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad); }
 }
 
-/* 모바일 카테칩 중앙정렬 */
+/* ===== 서브칩 트랙: 드래그/휠/버튼 ===== */
+let drag={active:false, startX:0, startLeft:0};
+function onPointerDown(e){
+  drag.active=true; subbarTrack.setPointerCapture(e.pointerId);
+  drag.startX=e.clientX; drag.startLeft=subbarTrack.scrollLeft;
+  subbarTrack.style.cursor='grabbing';
+}
+function onPointerMove(e){
+  if(!drag.active) return;
+  const dx=e.clientX - drag.startX;
+  subbarTrack.scrollLeft = drag.startLeft - dx;
+}
+function onPointerUp(e){
+  drag.active=false;
+  try{ subbarTrack.releasePointerCapture(e.pointerId);}catch(_){}
+  subbarTrack.style.cursor='';
+}
+subbarTrack.addEventListener('pointerdown', onPointerDown);
+subbarTrack.addEventListener('pointermove', onPointerMove);
+window.addEventListener('pointerup', onPointerUp);
+
+/* 휠을 가로 스크롤로 변환(Shift 불필요) */
+subbarTrack.addEventListener('wheel', (e)=>{
+  const atX = subbarTrack.scrollLeft;
+  const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
+  if (max <= 0) return; // 오버플로우 없으면 기본
+  // 세로휠 또는 트랙패드 제스처를 가로로
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? (e.deltaX) : (e.deltaY);
+  if (delta !== 0){
+    e.preventDefault();
+    subbarTrack.scrollLeft = clamp(atX + delta, 0, max);
+  }
+}, {passive:false});
+
+/* 네비 버튼 */
+function scrollByAmount(px){
+  subbarTrack.scrollBy({left:px, behavior:'smooth'});
+}
+btnPrev.addEventListener('click', ()=> scrollByAmount(-Math.max(220, subbarTrack.clientWidth*0.6)));
+btnNext.addEventListener('click', ()=> scrollByAmount(Math.max(220, subbarTrack.clientWidth*0.6)));
+
+/* 스크롤 위치에 따라 버튼 표시/숨김 */
+function updateSubbarUI(){
+  const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
+  const x = subbarTrack.scrollLeft;
+  const showPrev = x > 2;
+  const showNext = x < max - 2;
+  btnPrev.classList.toggle('show', showPrev);
+  btnNext.classList.toggle('show', showNext);
+}
+subbarTrack.addEventListener('scroll', ()=>{ updateSubbarUI(); }, {passive:true});
+window.addEventListener('resize', updateSubbarUI);
+
+/* 키보드 접근성: ←/→/Home/End 이동 */
+internetCats.addEventListener('keydown', (e)=>{
+  const chips = Array.from(internetCats.querySelectorAll('span[data-carrier]'));
+  const current = document.activeElement.closest('span[data-carrier]');
+  let idx = chips.indexOf(current);
+  if (e.key === 'ArrowRight'){ e.preventDefault(); idx = clamp(idx+1,0,chips.length-1); chips[idx].focus(); chips[idx].scrollIntoView({inline:'center', block:'nearest'}); }
+  if (e.key === 'ArrowLeft'){ e.preventDefault(); idx = clamp(idx-1,0,chips.length-1); chips[idx].focus(); chips[idx].scrollIntoView({inline:'center', block:'nearest'}); }
+  if (e.key === 'Home'){ e.preventDefault(); chips[0].focus(); chips[0].scrollIntoView({inline:'center'}); }
+  if (e.key === 'End'){ e.preventDefault(); chips[chips.length-1].focus(); chips[chips.length-1].scrollIntoView({inline:'center'}); }
+});
+
+/* 모바일: 선택 칩 중앙정렬 */
 function scrollCatsToSelected(){
   if (!isMobile()) return;
   const chip = Array.from(internetCats.querySelectorAll('span')).find(s=>s.dataset.carrier===state.carrier);
   if(!chip) return;
-  const wrapRect = internetCats.getBoundingClientRect();
+  const wrapRect = subbarTrack.getBoundingClientRect();
   const chipRect = chip.getBoundingClientRect();
   const targetCenter = chip.offsetLeft + chipRect.width/2;
-  internetCats.scrollTo({left: targetCenter - wrapRect.width/2, behavior: 'smooth'});
+  subbarTrack.scrollTo({left: targetCenter - wrapRect.width/2, behavior: 'smooth'});
+}
+
+/* 칩 활성 표시 */
+function setActiveChip(code){
+  internetCats.querySelectorAll('span[data-carrier]').forEach(c=> c.classList.toggle('is-active', c.dataset.carrier===code));
 }
 
 /* ===== 데이터 ===== */
@@ -493,7 +595,6 @@ function renderTvPlans(){
   if(!plans.length){ box.innerHTML='<div class="dm-help">해당 통신사 TV 요금제는 준비중입니다.</div>'; state.tv=null; updateTotal(); renderFinalTable(); return; }
   plans.forEach((p,i)=>{
     const el=document.createElement('span'); el.className='dm-btn'+(i===0?' active':''); el.dataset.tv=p.id; el.dataset.price=p.price; el.dataset.name=p.name;
-    /* ✔ 원복: 한 줄 형식 */
     el.innerHTML=`<b>${p.channels} 채널 ${p.name} · 월 ${money(p.price)}원</b>`;
     box.appendChild(el);
     if(i===0) state.tv={id:p.id,name:p.name,price:p.price};
@@ -540,13 +641,15 @@ function renderFinalTable(){
   });
 }
 
-/* ===== 이벤트 ===== */
+/* ===== 이벤트 바인딩(기존) ===== */
 document.getElementById('dm-carriers').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn) return;
   state.carrier=btn.dataset.carrier; setActive('#dm-carriers', btn);
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal();
   ensureEndpad($('#dm-carriers')); ensureEndpad($('#dm-bundle-mobile')); ensureEndpad($('#dm-family'));
   if (isMobile()) internetBar.classList.remove('show');
+  setActiveChip(state.carrier);
+  scrollCatsToSelected(); updateSubbarUI();
 });
 document.getElementById('dm-speeds').addEventListener('click', e=>{
   const btn=e.target.closest('.dm-btn'); if(!btn||!btn.dataset.speed) return;
@@ -573,13 +676,16 @@ document.getElementById('dm-family').addEventListener('click', e=>{
   state.familySelection=btn.dataset.family||'none'; setActive('#dm-family', btn); updateTotal(); renderFinalTable();
 });
 
-/* 카테고리 → 상세 */
+/* 카테고리 칩 → 상세 화면 */
 function selectCategory(catCarrier){
   window.toggleInternetDetail(true);
   const targetBtn=Array.from(document.querySelectorAll('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier===catCarrier);
   if(targetBtn){ targetBtn.click(); }
 }
-document.querySelectorAll('#internetCats span').forEach(chip=> chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier)));
+document.querySelectorAll('#internetCats span[data-carrier]').forEach(chip=>{
+  chip.addEventListener('click', ()=> selectCategory(chip.dataset.carrier));
+  chip.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectCategory(chip.dataset.carrier); }});
+});
 
 /* 상세 표시 토글 */
 window.toggleInternetDetail = function(show){
@@ -593,8 +699,9 @@ window.toggleInternetDetail = function(show){
 /* 초기 렌더 */
 function boot(){
   applyCarrierRules(); renderSpeedOptions(); renderTvPlans(); updateTotal(); renderFinalTable();
-  ['#topMainTabs','#internetCats','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll','#dm-final .dm-table-wrap']
+  ['#topMainTabs','#dm-carriers','#dm-speed-options','#dm-tv-options','#dm-bundle-mobile','#dm-family','#dm-total-scroll','#dm-final .dm-table-wrap']
     .forEach(sel=> ensureEndpad(document.querySelector(sel)));
+  updateSubbarUI();
 }
 boot();
 window.addEventListener('resize', ()=>{ if (isMobile()) boot(); });
@@ -626,6 +733,9 @@ document.getElementById('consultForm').addEventListener('submit', async (e)=>{
     e.target.reset(); fixedFormWrapper.classList.remove('active'); consultOpenBtn.style.display='flex';
   }catch(err){ alert('에러 발생! 잠시 후 다시 시도해 주세요.'); }
 });
+
+/* 최초 로드시 서브바 UI 상태 반영 */
+requestAnimationFrame(updateSubbarUI);
 </script>
 </body>
 </html>
