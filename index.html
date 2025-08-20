@@ -1,4 +1,4 @@
-테9
+테10
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,9 +30,12 @@
   .nav-2025-subbar-wrap{
     width:100%;left:0;position:absolute;top:calc(100% - 1px);
     display:none;background:#fff;border-bottom:2px solid #e8eefb;
-    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999
+    box-shadow:0 8px 34px rgba(59,130,246,.08);padding:10px 0;z-index:999;
+    /* 오버레이 블로킹 방지 */
+    pointer-events:none;
   }
   .nav-2025-subbar-wrap.show{display:block;}
+  .nav-2025-subbar-wrap .subbar-stage{pointer-events:auto;}
 
   .subbar-stage{
     max-width:1280px;margin:0 auto;position:relative;padding:0 24px 6px 24px;
@@ -112,7 +115,33 @@
   .custom-section{width:100%;background:#fff;display:flex;align-items:center;justify-content:center;padding:80px 0;min-height:520px}
   .section-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 2vw;display:flex;flex-direction:column;align-items:center}
 
-  /* ===== 하단 폼/푸터/DM 등 기존 그대로 ===== */
+  /* ===== 상담 폼(복원 + 최상위) ===== */
+  #fixedFormWrapper{
+    position:fixed;left:0;right:0;bottom:0;z-index:1200; /* 최상위 */
+    background:linear-gradient(90deg,#2563eb,#3b82f6);
+    border-top:2px solid #2563eb;box-shadow:0 -4px 24px rgba(0,0,0,.1);
+    transition:transform .38s cubic-bezier(.38,.94,.6,1.07),opacity .28s;
+    transform:translateY(100%);opacity:0;pointer-events:none;
+  }
+  #fixedFormWrapper.active{transform:translateY(0);opacity:1;pointer-events:auto}
+  .consult-form-inner{
+    background:#fff;border-radius:.8rem;box-shadow:0 4px 16px rgba(59,130,246,.1);
+    padding:1.2rem .8rem;display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;
+    max-width:680px;margin:1.1rem auto
+  }
+  .consult-form-inner input,.consult-form-inner select{
+    min-width:100px;font-size:1rem;padding:.55rem .7rem;border:2px solid #93c5fd;border-radius:.55rem;background:#f8fafc
+  }
+  .consult-form-inner button{
+    min-width:90px;padding:.6rem 1.6rem;font-size:1rem;font-weight:700;
+    background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;border-radius:.55rem;border:none
+  }
+  #consultCloseBtn{
+    background:none;border:none;color:#2563eb;font-size:1.4rem;font-weight:700;
+    position:absolute;right:16px;top:16px;cursor:pointer
+  }
+
+  /* ===== 하단 푸터/DM ===== */
   .footer-basic{background:#f8f9fa;border-top:1px solid #ececec;margin-top:30px;padding:36px 0 92px 0}
   .footer-inner{max-width:950px;margin:0 auto;padding:0 16px}
   .footer-biz{font-size:14px;color:#222;line-height:1.7;text-align:left;word-break:keep-all}
@@ -442,22 +471,42 @@ function ensureEndpad(el){
   if(!el.querySelector(':scope > .endpad')){ const pad=document.createElement('i'); pad.className='endpad'; pad.setAttribute('aria-hidden','true'); el.appendChild(pad); }
 }
 
-/* ===== 서브칩 트랙: 드래그/휠/버튼 ===== */
-let drag={active:false, startX:0, startLeft:0};
+/* ===== 서브칩 트랙: 드래그/휠/버튼 (임계값 적용 + 클릭 전달) ===== */
+let drag = { active:false, moved:false, startX:0, startLeft:0, pointerId:null };
+const DRAG_THRESHOLD = 5;
+
 function onPointerDown(e){
-  drag.active=true; subbarTrack.setPointerCapture(e.pointerId);
-  drag.startX=e.clientX; drag.startLeft=subbarTrack.scrollLeft;
-  subbarTrack.style.cursor='grabbing';
+  if (e.pointerType === 'mouse' && e.button !== 0) return; // 좌클릭만
+  drag.active = true;
+  drag.moved = false;
+  drag.pointerId = e.pointerId;
+  drag.startX = e.clientX;
+  drag.startLeft = subbarTrack.scrollLeft;
+  subbarTrack.style.cursor = 'grabbing';
+  // setPointerCapture는 임계값 초과 시점에만 적용
 }
 function onPointerMove(e){
   if(!drag.active) return;
-  const dx=e.clientX - drag.startX;
-  subbarTrack.scrollLeft = drag.startLeft - dx;
+  const dx = e.clientX - drag.startX;
+  if (!drag.moved && Math.abs(dx) > DRAG_THRESHOLD){
+    drag.moved = true;
+    try{ subbarTrack.setPointerCapture(drag.pointerId); }catch(_){}
+  }
+  if (drag.moved){
+    subbarTrack.scrollLeft = drag.startLeft - dx;
+  }
 }
 function onPointerUp(e){
-  drag.active=false;
-  try{ subbarTrack.releasePointerCapture(e.pointerId);}catch(_){}
-  subbarTrack.style.cursor='';
+  if(!drag.active) return;
+  subbarTrack.style.cursor = '';
+  // 드래그로 간주되지 않으면 실제 칩 클릭 전달
+  if(!drag.moved){
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const chip = el && el.closest && el.closest('#internetCats span[data-carrier]');
+    if (chip){ chip.focus(); chip.click(); }
+  }
+  try{ subbarTrack.releasePointerCapture(drag.pointerId);}catch(_){}
+  drag.active=false; drag.moved=false; drag.pointerId=null;
 }
 subbarTrack.addEventListener('pointerdown', onPointerDown);
 subbarTrack.addEventListener('pointermove', onPointerMove);
@@ -465,14 +514,12 @@ window.addEventListener('pointerup', onPointerUp);
 
 /* 휠을 가로 스크롤로 변환(Shift 불필요) */
 subbarTrack.addEventListener('wheel', (e)=>{
-  const atX = subbarTrack.scrollLeft;
   const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
-  if (max <= 0) return; // 오버플로우 없으면 기본
-  // 세로휠 또는 트랙패드 제스처를 가로로
-  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? (e.deltaX) : (e.deltaY);
+  if (max <= 0) return;
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
   if (delta !== 0){
     e.preventDefault();
-    subbarTrack.scrollLeft = clamp(atX + delta, 0, max);
+    subbarTrack.scrollLeft = clamp(subbarTrack.scrollLeft + delta, 0, max);
   }
 }, {passive:false});
 
@@ -487,12 +534,10 @@ btnNext.addEventListener('click', ()=> scrollByAmount(Math.max(220, subbarTrack.
 function updateSubbarUI(){
   const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
   const x = subbarTrack.scrollLeft;
-  const showPrev = x > 2;
-  const showNext = x < max - 2;
-  btnPrev.classList.toggle('show', showPrev);
-  btnNext.classList.toggle('show', showNext);
+  btnPrev.classList.toggle('show', x > 2);
+  btnNext.classList.toggle('show', x < max - 2);
 }
-subbarTrack.addEventListener('scroll', ()=>{ updateSubbarUI(); }, {passive:true});
+subbarTrack.addEventListener('scroll', updateSubbarUI, {passive:true});
 window.addEventListener('resize', updateSubbarUI);
 
 /* 키보드 접근성: ←/→/Home/End 이동 */
