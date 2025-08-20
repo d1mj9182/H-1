@@ -1,4 +1,4 @@
-테15
+테16
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -39,8 +39,8 @@
   .subbar-viewport{position:relative;overflow:hidden;--edge:32px;}
   .subbar-track{
     overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
-    white-space:nowrap; padding:6px 0 16px 0;
-    scroll-behavior:auto;
+    white-space:nowrap; padding:6px 0 16px 0; /* 하단 여백 ↑ */
+    scroll-behavior:auto; /* 빠른 이동 */
     scrollbar-width:none; -ms-overflow-style:none;
     mask-image: linear-gradient(to right, transparent 0, #000 var(--edge), #000 calc(100% - var(--edge)), transparent 100%);
   }
@@ -72,15 +72,6 @@
     .subbar-track{mask-image:none}
     .subbar-nav{width:32px}
   }
-
-  /* === 서브칩 아래 빠른 액션 바(아정당 스타일) === */
-  .subbar-actions{margin:2px 0 8px 0;}
-  .subbar-actions .action-btn{
-    display:inline-flex;align-items:center;gap:8px;margin:4px;padding:8px 12px;
-    border:1.6px solid #e6ecff;border-radius:999px;background:#f9fbff;color:#1d4ed8;
-    font-weight:800;font-size:13px;white-space:nowrap;cursor:pointer;
-  }
-  .subbar-actions .action-btn i{font-size:14px}
 
   /* ===== 고정 버튼 ===== */
   #consultOpenBtn{
@@ -147,7 +138,7 @@
   .dm-btn b{display:block;font-size:14px}
   .dm-btn small{display:block;margin-top:3px;font-size:12px;color:#666}
   .dm-btn.active{border-color:#d60028;box-shadow:0 0 0 3px rgba(214,0,40,.12)}
-  .badge-reco{position:absolute;right:8px;bottom:-10px; background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
+  .badge-reco{position:absolute;right:8px;bottom:-10px;background:#d60028;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;z-index:3}
 
   .dm-check{margin-right:6px}
   .dm-total{border:2px solid #d60028;border-radius:10px;padding:14px;font-weight:800;font-size:18px}
@@ -163,15 +154,15 @@
   .privacy-panel.open{max-height:540px;overflow:auto}
   .privacy-panel-inner{padding:12px;font-size:12px;color:#475569;line-height:1.6}
 
-  /* ===== 상세 하위 공용: 스크롤바 없는 가로 스크롤 ===== */
+  /* ===== 상세 하위 공용: 스크롤바 없는 가로 스크롤(아정당형) ===== */
   :root{ --endpad: 28px; --hs-edge: 28px; }
   .hs-wrap{position:relative}
   .hs-viewport{position:relative;overflow:hidden}
   .hs-track{
     overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
-    white-space:nowrap; padding-bottom:22px;
+    white-space:nowrap; padding-bottom:22px; /* 배지/그림자 안 잘림 */
     padding-right:var(--endpad); scroll-padding-inline-end:var(--endpad);
-    scroll-behavior:auto;
+    scroll-behavior:auto; /* 빠르게 */
     scrollbar-width:none; -ms-overflow-style:none;
     mask-image: linear-gradient(to right, transparent 0, #000 var(--hs-edge), #000 calc(100% - var(--hs-edge)), transparent 100%);
   }
@@ -191,6 +182,10 @@
     .hs-track{mask-image:none}
     .hs-nav{width:28px}
   }
+
+  /* 표 래퍼도 스크롤바 숨김 */
+  .dm-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+  .dm-table-wrap::-webkit-scrollbar{display:none;height:0}
 
   .dm-final-wrap{margin-top:18px;border:1px solid #e5e9f5;border-radius:12px;background:#fff}
   .dm-final-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eef2fb}
@@ -230,7 +225,7 @@
     </ul>
   </div>
 
-  <!-- 서브칩 바 -->
+  <!-- 서브칩 바 (액션바 제거됨) -->
   <div class="nav-2025-subbar-wrap" id="internetBar" role="region" aria-label="인터넷 카테고리">
     <div class="subbar-stage">
       <button class="subbar-nav left" id="subbarPrev" aria-label="왼쪽으로"><i class="fa-solid fa-chevron-left"></i></button>
@@ -248,16 +243,6 @@
         </div>
       </div>
       <button class="subbar-nav right" id="subbarNext" aria-label="오른쪽으로"><i class="fa-solid fa-chevron-right"></i></button>
-
-      <!-- ✅ 서브칩 아래 빠른 액션 바 -->
-      <div class="subbar-actions x-scroll" id="subbarActions">
-        <button class="action-btn" data-goto="anchor-compare"><i class="fa-solid fa-table-list"></i><b>요금비교</b></button>
-        <button class="action-btn" data-goto="dm-discounts"><i class="fa-solid fa-tags"></i><b>결합/할인</b></button>
-        <button class="action-btn" data-goto="anchor-gift"><i class="fa-solid fa-gift"></i><b>사은품</b></button>
-        <button class="action-btn" data-goto="anchor-fee"><i class="fa-solid fa-screwdriver-wrench"></i><b>설치비</b></button>
-        <button class="action-btn" data-goto="consult"><i class="fa-solid fa-headset"></i><b>상담신청</b></button>
-        <i class="endpad" aria-hidden="true"></i>
-      </div>
     </div>
   </div>
 </div>
@@ -501,7 +486,7 @@ function onPointerDown(e){
 }
 function onPointerMove(e){
   if(!drag.active) return;
-  const dx = (e.clientX - drag.startX) * 1.35;
+  const dx = (e.clientX - drag.startX) * 1.35; /* 드래그 가속 */
   if (!drag.moved && Math.abs(dx) > DRAG_THRESHOLD){
     drag.moved = true;
     try{ subbarTrack.setPointerCapture(drag.pointerId); }catch(_){}
@@ -528,7 +513,7 @@ subbarTrack.addEventListener('wheel', (e)=>{
   const max = subbarTrack.scrollWidth - subbarTrack.clientWidth;
   if (max <= 0) return;
   const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-  const delta = raw * 1.6;
+  const delta = raw * 1.6; /* 가속 계수 */
   if (delta !== 0){
     e.preventDefault();
     subbarTrack.scrollLeft = clamp(subbarTrack.scrollLeft + delta, 0, max);
@@ -620,7 +605,7 @@ function upgradeHScroll(el){
   viewport.appendChild(el);
   wrap.appendChild(rightBtn);
 
-  function scrollBy(px){ el.scrollBy({left:px,behavior:'auto'}); }
+  function scrollBy(px){ el.scrollBy({left:px,behavior:'auto'}); } /* 빠르게 */
   leftBtn.addEventListener('click', ()=> scrollBy(-Math.max(360, el.clientWidth*0.9)));
   rightBtn.addEventListener('click', ()=> scrollBy(Math.max(360, el.clientWidth*0.9)));
 
@@ -631,7 +616,7 @@ function upgradeHScroll(el){
   });
   el.addEventListener('pointermove', (e)=>{
     if(!d.on) return;
-    const dx=(e.clientX-d.sx)*1.35;
+    const dx=(e.clientX-d.sx)*1.35; /* 드래그 가속 */
     if(!d.moved && Math.abs(dx)>5){ d.moved=true; try{el.setPointerCapture(d.id);}catch(_){}} 
     if(d.moved){ el.scrollLeft=d.sl-dx; }
   });
@@ -644,7 +629,7 @@ function upgradeHScroll(el){
   el.addEventListener('wheel', (e)=>{
     const max = el.scrollWidth - el.clientWidth; if(max<=0) return;
     const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    const delta = raw * 1.6;
+    const delta = raw * 1.6; /* 가속 */
     if(delta!==0){ e.preventDefault(); el.scrollLeft = clamp(el.scrollLeft + delta, 0, max); }
   }, {passive:false});
 
@@ -691,7 +676,7 @@ function renderSpeedOptions(){
   });
   ensureEndpad(box);
   refreshSpeedPriceLabels();
-  upgradeHScroll(box);
+  upgradeHScroll(box); /* ← 아정당 형식 적용 */
 }
 function refreshSpeedPriceLabels(){
   $$('#dm-speed-options .dm-btn').forEach(btn=>{
@@ -716,7 +701,7 @@ function renderTvPlans(){
   ensureEndpad(box);
   updateTotal();
   renderFinalTable();
-  upgradeHScroll(box);
+  upgradeHScroll(box); /* ← 아정당 형식 적용 */
 }
 function updateTotal(){
   let total=0; const parts=[]; const internet=getInternetPrice();
@@ -792,7 +777,7 @@ document.getElementById('dm-family').addEventListener('click', e=>{
   state.familySelection=btn.dataset.family||'none'; setActive('#dm-family', btn); updateTotal(); renderFinalTable();
 });
 
-/* 카테고리 칩 → 상세 화면 */
+/* 서브칩 칩 클릭 → 상세로 이동 */
 function selectCategory(catCarrier){
   window.toggleInternetDetail(true);
   const targetBtn=Array.from(document.querySelectorAll('#dm-carriers .dm-btn')).find(b=>b.dataset.carrier===catCarrier);
@@ -803,22 +788,12 @@ document.querySelectorAll('#internetCats span[data-carrier]').forEach(chip=>{
   chip.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectCategory(chip.dataset.carrier); }});
 });
 
-/* 서브칩 아래 빠른 액션 이동 */
-document.getElementById('subbarActions').addEventListener('click', (e)=>{
-  const btn=e.target.closest('.action-btn'); if(!btn) return;
-  const target=btn.dataset.goto;
-  if(target==='consult'){ document.getElementById('consultOpenBtn').click(); return; }
-  window.toggleInternetDetail(true);
-  const el=document.getElementById(target) || document.getElementById('internet-detail');
-  if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
-});
-
 /* 상세 표시 토글 */
 window.toggleInternetDetail = function(show){
   const detail = document.getElementById('internet-detail');
   const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
   detail.style.display = show ? 'block' : 'none';
-  homeSections.forEach(sec => sec.style.display = show ? 'none' : 'flex'); /* ← 오타 수정 완료 */
+  homeSections.forEach(sec => sec.style.display = show ? 'none' : 'flex');
   if(show){
     applyCarrierRules();
     renderSpeedOptions();
@@ -831,6 +806,8 @@ window.toggleInternetDetail = function(show){
     upgradeHScroll($('#dm-carriers'));
     upgradeHScroll($('#dm-bundle-mobile'));
     upgradeHScroll($('#dm-family'));
+    upgradeHScroll($('#dm-speed-options'));
+    upgradeHScroll($('#dm-tv-options'));
   }
 }
 
@@ -856,6 +833,8 @@ renderFinalTable();
 upgradeHScroll($('#dm-carriers'));
 upgradeHScroll($('#dm-bundle-mobile'));
 upgradeHScroll($('#dm-family'));
+upgradeHScroll($('#dm-speed-options'));
+upgradeHScroll($('#dm-tv-options'));
 </script>
 </body>
 </html>
