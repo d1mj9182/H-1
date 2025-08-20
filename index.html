@@ -1,4 +1,4 @@
-테12
+테13
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -819,3 +819,50 @@ window.toggleInternetDetail = function(show){
   const homeSections = Array.from(document.querySelectorAll('.custom-section')).filter(s=> s.id !== 'internet-detail');
   detail.style.display = show ? 'block' : 'none';
   homeSections.for
+  homeSections.forEach(sec => sec.style.display = show ? 'none' : 'flex');
+  if(show){
+    applyCarrierRules();
+    renderSpeedOptions();
+    renderTvPlans();
+    updateTotal();
+    renderFinalTable();
+    ensureEndpad($('#dm-carriers'));
+    ensureEndpad($('#dm-bundle-mobile'));
+    ensureEndpad($('#dm-family'));
+    upgradeHScroll($('#dm-carriers'));
+    upgradeHScroll($('#dm-bundle-mobile'));
+    upgradeHScroll($('#dm-family'));
+  }
+}
+
+/* ===== 고정 버튼 동작 ===== */
+$('#consultOpenBtn').addEventListener('click', ()=>{
+  $('#fixedFormWrapper').classList.add('active');
+});
+$('#consultCloseBtn').addEventListener('click', ()=>{
+  $('#fixedFormWrapper').classList.remove('active');
+});
+$('#scrollTopBtn').addEventListener('click', ()=>{
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+/* 개인정보 더보기 아코디언 */
+const privacyToggle = $('#privacyAccordionToggle');
+privacyToggle.addEventListener('click', ()=>{
+  const panel = $('#privacyAccordion');
+  const expanded = panel.classList.toggle('open');
+  privacyToggle.setAttribute('aria-expanded', expanded);
+});
+
+/* 초기 실행 */
+applyCarrierRules();
+renderSpeedOptions();
+renderTvPlans();
+updateTotal();
+renderFinalTable();
+upgradeHScroll($('#dm-carriers'));
+upgradeHScroll($('#dm-bundle-mobile'));
+upgradeHScroll($('#dm-family'));
+</script>
+</body>
+</html>
